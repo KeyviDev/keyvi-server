@@ -35,7 +35,7 @@ include_directories("src")
 FILE(GLOB_RECURSE SERVER_SOURCES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} src/keyvi_server/*.cpp)
 
 # include upstream keyvi
-add_subdirectory(src/keyvi EXCLUDE_FROM_ALL)
+add_subdirectory(src/3rdparty/keyvi EXCLUDE_FROM_ALL)
 
 # BOOST
 set (_KEYVI_BOOST_LIBRARIES "program_options" "iostreams" "filesystem" "system" "regex" "thread")
