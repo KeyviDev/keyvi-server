@@ -1,7 +1,0 @@
-syntax="proto2";
-package snappy_message;
-
-message SnappyMessageProto {
-    optional string text = 1;
-    repeated int32 numbers = 2;
-};
