@@ -50,7 +50,7 @@ def generate_protocols():
                     with open(path, 'r') as f:
                         code = f.read()
 
-                    # All protos are in buildgrid._protos
+                    # fix imports
                     code = re.sub(r'^import index_pb2', r'import keyviserver.proto.index_pb2',
                                   code, flags=re.MULTILINE)
 
