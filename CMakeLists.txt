@@ -57,7 +57,7 @@ endif ()
 
 #### BRPC ####
 
-add_subdirectory(src/3rdparty/brpc)
+add_subdirectory(src/3rdparty/brpc EXCLUDE_FROM_ALL)
 
 add_executable(keyviserver ${SERVER_SOURCES} ${PROTO_SRC} ${PROTO_HEADER})
 target_link_libraries(keyviserver

@@ -1,4 +1,4 @@
-/* keyvi - A key value store.
+/* keyviserver - A key value store server based on keyvi.
  *
  * Copyright 2019 Hendrik Muhs<hendrik.muhs@gmail.com>
  *

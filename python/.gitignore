@@ -1,0 +1,16 @@
+# PyTest
+.cache
+.pytest_cache
+
+# build artifacts
+keyviserver.egg-info/
+build/
+dist/
+src/py/keyviserver/proto/*
+__pycache__/
+*.py[cod]
+*.so
+*.egg-info
+MANIFEST
+
+src/py/keyviserver/_version.py
