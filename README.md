@@ -12,7 +12,7 @@ In addition to a working gcc build environment, install the following libraries,
 
 For example on Ubuntu should install all the dependencies you need:
 
-    apt-get install cmake cython g++ libboost-all-dev libsnappy-dev libzzip-dev python-stdeb zlib1g-dev libssl-dev libgflags-dev libprotobuf-dev libprotoc-dev protobuf-compiler libleveldb-dev
+    sudo apt-get install cmake cython g++ libboost-all-dev libsnappy-dev libzzip-dev python-stdeb zlib1g-dev libssl-dev libgflags-dev libprotobuf-dev libprotoc-dev protobuf-compiler libleveldb-dev doxygen
 
 #### MAC
 
