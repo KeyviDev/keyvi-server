@@ -3,6 +3,13 @@ option cc_generic_services = true;
 
 package keyvi_server.service;
 
+message InfoRequest {
+};
+
+message InfoResponse {
+    map<string, string>  info = 1;
+};
+
 message GetRequest {
     required string key = 1;
 };
@@ -32,9 +39,10 @@ message EmptyBodyResponse {
 };
 
 service Index {
-      rpc Get(GetRequest) returns (GetResponse);
-      rpc Set(SetRequest) returns (EmptyBodyResponse);
-      rpc MSet(MSetRequest) returns (EmptyBodyResponse);
-      rpc ForceMerge(ForceMergeRequest) returns (EmptyBodyResponse);
-      rpc Flush(FlushRequest) returns (EmptyBodyResponse);
+    rpc Info(InfoRequest) returns (InfoResponse);
+    rpc Get(GetRequest) returns (GetResponse);
+    rpc Set(SetRequest) returns (EmptyBodyResponse);
+    rpc MSet(MSetRequest) returns (EmptyBodyResponse);
+    rpc ForceMerge(ForceMergeRequest) returns (EmptyBodyResponse);
+    rpc Flush(FlushRequest) returns (EmptyBodyResponse);
 };

@@ -42,6 +42,13 @@ IndexImpl::IndexImpl(std::string name)
 
 IndexImpl::~IndexImpl() {}
 
+void IndexImpl::Info(google::protobuf::RpcController *cntl_base, const InfoRequest *request, InfoResponse *response,
+                     google::protobuf::Closure *done) {
+  brpc::ClosureGuard done_guard(done);
+  brpc::Controller *cntl = static_cast<brpc::Controller *>(cntl_base);
+  (*response->mutable_info())["version"] = "0.0.1";
+}
+
 void IndexImpl::Get(google::protobuf::RpcController *cntl_base, const GetRequest *request, GetResponse *response,
                     google::protobuf::Closure *done) {
   brpc::ClosureGuard done_guard(done);
@@ -50,7 +57,6 @@ void IndexImpl::Get(google::protobuf::RpcController *cntl_base, const GetRequest
   keyvi::dictionary::Match match = index_[request->key()];
 
   response->set_value(match.GetValueAsString());
-  cntl->response_attachment().append(cntl->request_attachment());
 }
 
 void IndexImpl::Set(google::protobuf::RpcController *cntl_base, const SetRequest *request, EmptyBodyResponse *response,

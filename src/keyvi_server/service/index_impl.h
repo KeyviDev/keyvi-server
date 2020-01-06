@@ -39,6 +39,8 @@ class IndexImpl : public Index {
   explicit IndexImpl(std::string name);
   ~IndexImpl();
 
+  void Info(google::protobuf::RpcController* cntl_base, const InfoRequest* request, InfoResponse* response,
+            google::protobuf::Closure* done);
   void Get(google::protobuf::RpcController* cntl_base, const GetRequest* request, GetResponse* response,
            google::protobuf::Closure* done);
   void Set(google::protobuf::RpcController* cntl_base, const SetRequest* request, EmptyBodyResponse* response,

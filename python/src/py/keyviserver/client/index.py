@@ -12,6 +12,10 @@ class Index(object):
         self.port = port
         self.channel = grpc.insecure_channel(host + ":" + str(port))
         self.stub = index_pb2_grpc.IndexStub(self.channel)
+        try:
+            self.info()
+        except grpc.RpcError:
+            raise ConnectionError('Failed to connect') from None
 
     def __setitem__(self, key, value):
         self.set(key, value)
@@ -21,6 +25,10 @@ class Index(object):
         if value is None:
             raise KeyError(key)
         return value
+
+    def info(self):
+        response = self.stub.Info(index_pb2.InfoRequest())
+        return response.info
 
     def set(self, key, value):
         if not isinstance(value, (str, bytes)):
