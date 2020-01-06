@@ -27,6 +27,9 @@
 #include <brpc/closure_guard.h>
 #include <brpc/controller.h>
 
+#include <google/protobuf/map.h>
+
+#include <memory>
 #include <string>
 
 #include "keyvi_server/util/executable_finder.h"
@@ -50,12 +53,42 @@ void IndexImpl::Get(google::protobuf::RpcController *cntl_base, const GetRequest
   cntl->response_attachment().append(cntl->request_attachment());
 }
 
-void IndexImpl::Set(google::protobuf::RpcController *cntl_base, const SetRequest *request, SetResponse *response,
+void IndexImpl::Set(google::protobuf::RpcController *cntl_base, const SetRequest *request, EmptyBodyResponse *response,
                     google::protobuf::Closure *done) {
   brpc::ClosureGuard done_guard(done);
   brpc::Controller *cntl = static_cast<brpc::Controller *>(cntl_base);
 
   index_.Set(request->key(), request->value());
+}
+
+void IndexImpl::MSet(google::protobuf::RpcController *cntl_base, const MSetRequest *request,
+                     EmptyBodyResponse *response, google::protobuf::Closure *done) {
+  brpc::ClosureGuard done_guard(done);
+  brpc::Controller *cntl = static_cast<brpc::Controller *>(cntl_base);
+  std::shared_ptr<google::protobuf::Map<std::string, std::string>> key_values =
+      std::make_shared<google::protobuf::Map<std::string, std::string>>();
+
+  // hack: cast to remove const and use map from request
+  MSetRequest *request_m = const_cast<MSetRequest *>(request);
+  (*request_m->mutable_key_values()).swap(*key_values.get());
+
+  index_.MSet(key_values);
+}
+
+void IndexImpl::Flush(google::protobuf::RpcController *cntl_base, const FlushRequest *request,
+                      EmptyBodyResponse *response, google::protobuf::Closure *done) {
+  brpc::ClosureGuard done_guard(done);
+  brpc::Controller *cntl = static_cast<brpc::Controller *>(cntl_base);
+
+  index_.Flush(request->async());
+}
+
+void IndexImpl::ForceMerge(google::protobuf::RpcController *cntl_base, const ForceMergeRequest *request,
+                           EmptyBodyResponse *response, google::protobuf::Closure *done) {
+  brpc::ClosureGuard done_guard(done);
+  brpc::Controller *cntl = static_cast<brpc::Controller *>(cntl_base);
+
+  index_.ForceMerge(request->max_segments());
 }
 
 }  // namespace service

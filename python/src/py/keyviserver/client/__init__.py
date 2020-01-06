@@ -18,4 +18,3 @@ limitations under the License.
 '''
 
 from keyviserver._version import __version__
-from keyviserver.client.index import Index
