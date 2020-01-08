@@ -11,7 +11,6 @@ brew install openssl
 brew install gnu-getopt
 brew install coreutils
 brew install gflags
-brew install protobuf
 brew install leveldb
 
 brew upgrade pyenv
