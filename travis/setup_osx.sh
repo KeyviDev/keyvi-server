@@ -11,7 +11,8 @@ brew install openssl
 brew install gnu-getopt
 brew install gflags
 brew install leveldb
-
+brew install protobuf
+brew install gperftools
 brew upgrade pyenv
 
 export PATH="${HOME}/.pyenv/shims/:/root/.pyenv/bin:${PATH}"
