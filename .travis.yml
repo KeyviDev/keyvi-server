@@ -62,6 +62,19 @@ matrix:
       compiler: clang
       env: BUILD_TYPE=osx PYTHON_VERSION=pypy2.7-6.0.0
 
+addons:
+  homebrew:
+    packages:
+    - zlib
+    - snappy
+    - openssl
+    - gnu-getopt
+    - gflags
+    - leveldb
+    - protobuf
+    - gperftools
+    - pyenv
+
 before_install:
   - if [ "$TRAVIS_OS_NAME" == "osx" ]; then source ./travis/setup_osx.sh ; fi
 
