@@ -6,19 +6,19 @@ cd build
 cmake -DCMAKE_BUILD_TYPE=release -DZLIB_ROOT=/usr/local/opt/zlib ..
 make -j 4
 
-cd ..
+#cd ..
 
 
-export TMPDIR=/Volumes/ram-disk
+#export TMPDIR=/Volumes/ram-disk
 
-cd python
-python setup.py bdist_wheel -d wheelhouse --zlib-root /usr/local/opt/zlib
+#cd python
+#python setup.py bdist_wheel -d wheelhouse
 
 # check that static linkage worked by uninstalling libraries
-brew remove zlib
-brew remove snappy
+#brew remove zlib
+#brew remove snappy
 
-sudo -H pip install wheelhouse/*.whl
+#sudo -H pip install wheelhouse/*.whl
 #py.test tests
 #py.test integration-tests
-cd ..
+#cd ..
