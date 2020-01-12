@@ -44,7 +44,7 @@ void IndexImpl::Get(google::protobuf::RpcController *cntl_base, const GetRequest
   brpc::ClosureGuard done_guard(done);
   brpc::Controller *cntl = static_cast<brpc::Controller *>(cntl_base);
 
-  keyvi::dictionary::Match smatch = index_[request->key()];
+  keyvi::dictionary::Match match = index_[request->key()];
 
   response->set_value(match.GetValueAsString());
   cntl->response_attachment().append(cntl->request_attachment());
