@@ -1,0 +1,8 @@
+[distutils]
+index-servers=
+    pypi
+    pypitest
+
+[pypitest]
+
+[pypi]
