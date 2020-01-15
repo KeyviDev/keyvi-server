@@ -91,7 +91,7 @@ include_directories(
 )
 
 execute_process(
-    COMMAND bash -c "git rev-parse --short HEAD | tr -d '\n'"
+    COMMAND bash -c "${PROJECT_SOURCE_DIR}/tools/get_brpc_revision.sh ${PROJECT_SOURCE_DIR} | tr -d '\n'"
     OUTPUT_VARIABLE BRPC_REVISION
 )
 
@@ -285,7 +285,6 @@ set(BUTIL_SOURCES
     ${PROJECT_SOURCE_DIR}/src/butil/hash.cc
     ${PROJECT_SOURCE_DIR}/src/butil/lazy_instance.cc
     ${PROJECT_SOURCE_DIR}/src/butil/location.cc
-    ${PROJECT_SOURCE_DIR}/src/butil/md5.cc
     ${PROJECT_SOURCE_DIR}/src/butil/memory/aligned_memory.cc
     ${PROJECT_SOURCE_DIR}/src/butil/memory/ref_counted.cc
     ${PROJECT_SOURCE_DIR}/src/butil/memory/ref_counted_memory.cc
