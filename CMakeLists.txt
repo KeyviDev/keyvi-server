@@ -34,6 +34,8 @@ include_directories(${GPERFTOOLS_INCLUDE_DIR})
 include_directories("src")
 FILE(GLOB_RECURSE SERVER_SOURCES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} src/keyvi_server/*.cpp)
 
+include_directories(${OPENSSL_INCLUDE_DIR})
+
 # include upstream keyvi
 add_subdirectory(src/3rdparty/keyvi EXCLUDE_FROM_ALL)
 
