@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 set -x
 
+# fix openssl not found issue
+xcode-select --install
+
 mkdir build
 cd build
 cmake -DCMAKE_BUILD_TYPE=release -DZLIB_ROOT=/usr/local/opt/zlib ..
