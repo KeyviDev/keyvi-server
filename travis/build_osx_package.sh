@@ -6,7 +6,7 @@ xcode-select --install
 
 mkdir build
 cd build
-cmake -DCMAKE_BUILD_TYPE=release -DZLIB_ROOT=/usr/local/opt/zlib ..
+cmake -DCMAKE_BUILD_TYPE=release -DCMAKE_RULE_MESSAGES:BOOL=OFF -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON -DZLIB_ROOT=/usr/local/opt/zlib ..
 make -j 4
 
 #cd ..
