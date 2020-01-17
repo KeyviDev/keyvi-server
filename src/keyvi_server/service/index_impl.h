@@ -39,10 +39,18 @@ class IndexImpl : public Index {
   explicit IndexImpl(std::string name);
   ~IndexImpl();
 
+  void Info(google::protobuf::RpcController* cntl_base, const InfoRequest* request, InfoResponse* response,
+            google::protobuf::Closure* done);
   void Get(google::protobuf::RpcController* cntl_base, const GetRequest* request, GetResponse* response,
            google::protobuf::Closure* done);
-  void Set(google::protobuf::RpcController* cntl_base, const SetRequest* request, SetResponse* response,
+  void Set(google::protobuf::RpcController* cntl_base, const SetRequest* request, EmptyBodyResponse* response,
            google::protobuf::Closure* done);
+  void MSet(google::protobuf::RpcController* cntl_base, const MSetRequest* request, EmptyBodyResponse* response,
+            google::protobuf::Closure* done);
+  void Flush(google::protobuf::RpcController* cntl_base, const FlushRequest* request, EmptyBodyResponse* response,
+             google::protobuf::Closure* done);
+  void ForceMerge(google::protobuf::RpcController* cntl_base, const ForceMergeRequest* request,
+                  EmptyBodyResponse* response, google::protobuf::Closure* done);
 
  private:
   keyvi::index::Index index_;
