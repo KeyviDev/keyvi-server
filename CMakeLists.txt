@@ -34,8 +34,6 @@ include_directories(${GPERFTOOLS_INCLUDE_DIR})
 include_directories("src")
 FILE(GLOB_RECURSE SERVER_SOURCES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} src/keyvi_server/*.cpp)
 
-include_directories(${OPENSSL_INCLUDE_DIR})
-
 # include upstream keyvi
 add_subdirectory(src/3rdparty/keyvi EXCLUDE_FROM_ALL)
 
@@ -68,6 +66,7 @@ target_link_libraries(keyviserver
 )
 # not ideal but the BRPC cmake module does not export includes properly yet
 target_include_directories(keyviserver PRIVATE "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/src/3rdparty/brpc/output/include/>")
+target_include_directories(keyviserver PRIVATE ${OPENSSL_INCLUDE_DIR})
 
 add_custom_target(merger-bin ALL
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:keyvimerger> ${CMAKE_BINARY_DIR}
