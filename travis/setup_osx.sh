@@ -7,6 +7,9 @@ df -h
 brew update
 brew install zlib
 brew install snappy
+brew install openssl git gnu-getopt coreutils
+brew install gflags protobuf leveldb
+brew install gperftools
 
 brew upgrade pyenv
 
