@@ -55,8 +55,6 @@ else ()
     set(_KEYVI_LINK_LIBRARIES_DYNAMIC "${_KEYVI_LINK_LIBRARIES_DYNAMIC} boost_program_options boost_iostreams boost_filesystem boost_system boost_regex boost_thread")
 endif ()
 
-find_package(OpenSSL REQUIRED)
-
 #### BRPC ####
 
 add_subdirectory(src/3rdparty/brpc EXCLUDE_FROM_ALL)
