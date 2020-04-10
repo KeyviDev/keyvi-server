@@ -44,6 +44,3 @@ build/*
 
 # vim swap files
 *.swp
-
-# keyvi
-src/keyvi/*
