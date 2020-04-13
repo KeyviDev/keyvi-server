@@ -31,12 +31,14 @@
 
 #include <string>
 
+#include "keyvi_server/core/data_backend.h"
+
 namespace keyvi_server {
 namespace service {
 
 class IndexImpl : public Index {
  public:
-  explicit IndexImpl(std::string name);
+  explicit IndexImpl(const keyvi_server::core::data_backend_t& backend);
   ~IndexImpl();
 
   void Info(google::protobuf::RpcController* cntl_base, const InfoRequest* request, InfoResponse* response,
@@ -53,7 +55,7 @@ class IndexImpl : public Index {
                   EmptyBodyResponse* response, google::protobuf::Closure* done);
 
  private:
-  keyvi::index::Index index_;
+  keyvi_server::core::data_backend_t backend_;
 };
 }  // namespace service
 }  // namespace keyvi_server
