@@ -45,6 +45,11 @@ bool RedisServiceImpl::Get(const std::string& key, std::string* value) {
   return true;
 }
 
+bool RedisServiceImpl::MSet(const std::shared_ptr<std::map<std::string, std::string>>& key_values) {
+  backend_->GetIndex().MSet(key_values);
+  return true;
+}
+
 }  // namespace redis
 }  // namespace service
 }  // namespace keyvi_server

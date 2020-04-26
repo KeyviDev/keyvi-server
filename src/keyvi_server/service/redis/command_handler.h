@@ -27,6 +27,8 @@
 
 #include <brpc/redis.h>
 
+#include <map>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -40,7 +42,7 @@ class CommandHandler {
  public:
   class GetCommandHandler : public brpc::RedisCommandHandler {
    public:
-    explicit GetCommandHandler(RedisServiceImpl* rsimpl) : _rsimpl(rsimpl) {}
+    explicit GetCommandHandler(RedisServiceImpl* rsimpl) : redis_service_impl_(rsimpl) {}
 
     brpc::RedisCommandHandlerResult Run(const std::vector<const char*>& args, brpc::RedisReply* output,
                                         bool /*flush_batched*/) override {
@@ -50,7 +52,7 @@ class CommandHandler {
       }
       const std::string key(args[1]);
       std::string value;
-      if (_rsimpl->Get(key, &value)) {
+      if (redis_service_impl_->Get(key, &value)) {
         output->SetString(value);
       } else {
         output->SetNullString();
@@ -59,12 +61,12 @@ class CommandHandler {
     }
 
    private:
-    RedisServiceImpl* _rsimpl;
+    RedisServiceImpl* redis_service_impl_;
   };
 
   class SetCommandHandler : public brpc::RedisCommandHandler {
    public:
-    explicit SetCommandHandler(RedisServiceImpl* rsimpl) : _rsimpl(rsimpl) {}
+    explicit SetCommandHandler(RedisServiceImpl* rsimpl) : redis_service_impl_(rsimpl) {}
 
     brpc::RedisCommandHandlerResult Run(const std::vector<const char*>& args, brpc::RedisReply* output,
                                         bool /*flush_batched*/) override {
@@ -74,13 +76,44 @@ class CommandHandler {
       }
       const std::string key(args[1]);
       const std::string value(args[2]);
-      _rsimpl->Set(key, value);
+      redis_service_impl_->Set(key, value);
       output->SetStatus("OK");
       return brpc::REDIS_CMD_HANDLED;
     }
 
    private:
-    RedisServiceImpl* _rsimpl;
+    RedisServiceImpl* redis_service_impl_;
+  };
+
+  class MSetCommandHandler : public brpc::RedisCommandHandler {
+   public:
+    explicit MSetCommandHandler(RedisServiceImpl* rsimpl) : redis_service_impl_(rsimpl) {}
+
+    brpc::RedisCommandHandlerResult Run(const std::vector<const char*>& args, brpc::RedisReply* output,
+                                        bool /*flush_batched*/) override {
+      if (args.size() < 3ul || args.size() % 2 != 1) {
+        output->FormatError("wrong number of arguments for 'mset' command");
+        return brpc::REDIS_CMD_HANDLED;
+      }
+
+      // copy the key values into a map
+      // note: the vector contains raw pointers into the input buffer which we have no access, too
+      // as long as mset works async we have to copy
+      std::shared_ptr<std::map<std::string, std::string>> key_values =
+          std::make_shared<std::map<std::string, std::string>>();
+
+      for (size_t i = 1; i < args.size();) {
+        key_values->emplace(args[i], args[i + 1]);
+        i += 2;
+      }
+
+      redis_service_impl_->MSet(key_values);
+      output->SetStatus("OK");
+      return brpc::REDIS_CMD_HANDLED;
+    }
+
+   private:
+    RedisServiceImpl* redis_service_impl_;
   };
 };
 
