@@ -32,13 +32,10 @@
 #include <memory>
 #include <string>
 
-#include "keyvi_server/util/executable_finder.h"
-
 namespace keyvi_server {
 namespace service {
 
-IndexImpl::IndexImpl(std::string name)
-    : index_(name, {{KEYVIMERGER_BIN, util::ExecutableFinder::GetKeyviMergerBin()}}) {}
+IndexImpl::IndexImpl(const keyvi_server::core::data_backend_t &backend) : backend_(backend) {}
 
 IndexImpl::~IndexImpl() {}
 
@@ -54,7 +51,7 @@ void IndexImpl::Get(google::protobuf::RpcController *cntl_base, const GetRequest
   brpc::ClosureGuard done_guard(done);
   brpc::Controller *cntl = static_cast<brpc::Controller *>(cntl_base);
 
-  keyvi::dictionary::Match match = index_[request->key()];
+  keyvi::dictionary::Match match = backend_->GetIndex()[request->key()];
 
   response->set_value(match.GetValueAsString());
 }
@@ -64,7 +61,7 @@ void IndexImpl::Set(google::protobuf::RpcController *cntl_base, const SetRequest
   brpc::ClosureGuard done_guard(done);
   brpc::Controller *cntl = static_cast<brpc::Controller *>(cntl_base);
 
-  index_.Set(request->key(), request->value());
+  backend_->GetIndex().Set(request->key(), request->value());
 }
 
 void IndexImpl::MSet(google::protobuf::RpcController *cntl_base, const MSetRequest *request,
@@ -78,7 +75,7 @@ void IndexImpl::MSet(google::protobuf::RpcController *cntl_base, const MSetReque
   MSetRequest *request_m = const_cast<MSetRequest *>(request);
   (*request_m->mutable_key_values()).swap(*key_values.get());
 
-  index_.MSet(key_values);
+  backend_->GetIndex().MSet(key_values);
 }
 
 void IndexImpl::Flush(google::protobuf::RpcController *cntl_base, const FlushRequest *request,
@@ -86,7 +83,7 @@ void IndexImpl::Flush(google::protobuf::RpcController *cntl_base, const FlushReq
   brpc::ClosureGuard done_guard(done);
   brpc::Controller *cntl = static_cast<brpc::Controller *>(cntl_base);
 
-  index_.Flush(request->async());
+  backend_->GetIndex().Flush(request->async());
 }
 
 void IndexImpl::ForceMerge(google::protobuf::RpcController *cntl_base, const ForceMergeRequest *request,
@@ -94,7 +91,7 @@ void IndexImpl::ForceMerge(google::protobuf::RpcController *cntl_base, const For
   brpc::ClosureGuard done_guard(done);
   brpc::Controller *cntl = static_cast<brpc::Controller *>(cntl_base);
 
-  index_.ForceMerge(request->max_segments());
+  backend_->GetIndex().ForceMerge(request->max_segments());
 }
 
 }  // namespace service
