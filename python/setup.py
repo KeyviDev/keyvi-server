@@ -30,8 +30,8 @@ except:
 #################
 
 VERSION_MAJOR = 0
-VERSION_MINOR = 3
-VERSION_PATCH = 3
+VERSION_MINOR = 4
+VERSION_PATCH = 2
 VERSION_DEV = 0
 IS_RELEASED = False
 
@@ -76,9 +76,14 @@ def generate_pykeyvi_source():
     max_modification_time = max([path.getmtime(fn) for fn in addons + pxds + converter_files])
 
     if not path.exists(pykeyvi_cpp) or max_modification_time > path.getmtime(pykeyvi_cpp):
-        import autowrap.Main
-        autowrap.Main.run(pxds, addons, [converters], pykeyvi_pyx)
-
+        try:
+            import autowrap.Main
+            autowrap.Main.run(pxds, addons, [converters], pykeyvi_pyx)
+        except:
+            if not path.exists(pykeyvi_cpp):
+                raise
+            else:
+                print ("Could not find autowrap, probably running from sdist environment")
 
 @contextmanager
 def symlink_keyvi():
@@ -318,7 +323,7 @@ with symlink_keyvi() as (pykeyvi_source_path, keyvi_source_path):
     PACKAGE_NAME = 'keyvi'
 
     install_requires = [
-        'msgpack-python>=0.5.6',
+        'msgpack>=1.0.0',
     ]
 
     commands = {'build_ext': build_ext, 'sdist': sdist, 'build': build, 'bdist': bdist}
@@ -354,7 +359,6 @@ with symlink_keyvi() as (pykeyvi_source_path, keyvi_source_path):
             'Programming Language :: C++',
             'Programming Language :: Cython',
             'Programming Language :: Python',
-            'Programming Language :: Python :: 2.7',
             'Programming Language :: Python :: 3.5',
             'Programming Language :: Python :: 3.6',
             'Programming Language :: Python :: 3.7',
