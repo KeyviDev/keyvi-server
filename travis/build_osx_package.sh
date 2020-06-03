@@ -11,6 +11,7 @@ export TMPDIR=/Volumes/ram-disk
 cd python
 
 pip install -r requirements.txt
+pip install redis
 
 python setup.py build
 python setup.py install --user

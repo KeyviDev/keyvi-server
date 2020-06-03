@@ -13,6 +13,7 @@ cd /io/python
 pyenv global ${PYTHON_VERSION}
 
 pip install -r requirements.txt
+pip install redis
 
 python setup.py build
 python setup.py install --user
