@@ -25,11 +25,11 @@
 #ifndef KEYVI_SERVER_SERVICE_REDIS_REDIS_SERVICE_IMPL_H_
 #define KEYVI_SERVER_SERVICE_REDIS_REDIS_SERVICE_IMPL_H_
 
-#include <brpc/redis.h>
-
 #include <map>
 #include <memory>
 #include <string>
+
+#include <brpc/redis.h>
 
 #include "keyvi_server/core/data_backend.h"
 

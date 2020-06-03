@@ -25,12 +25,12 @@
 #ifndef KEYVI_SERVER_SERVICE_REDIS_COMMAND_HANDLER_H_
 #define KEYVI_SERVER_SERVICE_REDIS_COMMAND_HANDLER_H_
 
-#include <brpc/redis.h>
-
 #include <map>
 #include <memory>
 #include <string>
 #include <vector>
+
+#include <brpc/redis.h>
 
 #include "keyvi_server/service/redis/redis_service_impl.h"
 

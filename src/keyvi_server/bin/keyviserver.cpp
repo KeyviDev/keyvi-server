@@ -15,10 +15,10 @@
  * limitations under the License.
  */
 
+#include <memory>
+
 #include <brpc/server.h>
 #include <butil/logging.h>
-
-#include <memory>
 
 #include <boost/program_options.hpp>
 
