@@ -115,6 +115,21 @@ class CommandHandler {
    private:
     RedisServiceImpl* redis_service_impl_;
   };
+
+  class SaveCommandHandler : public brpc::RedisCommandHandler {
+   public:
+    explicit SaveCommandHandler(RedisServiceImpl* rsimpl) : redis_service_impl_(rsimpl) {}
+
+    brpc::RedisCommandHandlerResult Run(const std::vector<const char*>& args, brpc::RedisReply* output,
+                                        bool /*flush_batched*/) override {
+      redis_service_impl_->Save();
+      output->SetStatus("OK");
+      return brpc::REDIS_CMD_HANDLED;
+    }
+
+   private:
+    RedisServiceImpl* redis_service_impl_;
+  };
 };
 
 }  // namespace redis

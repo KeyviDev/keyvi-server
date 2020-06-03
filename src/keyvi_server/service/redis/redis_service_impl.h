@@ -47,6 +47,8 @@ class RedisServiceImpl : public brpc::RedisService {
 
   bool MSet(const std::shared_ptr<std::map<std::string, std::string>>& key_values);
 
+  bool Save();
+
  private:
   keyvi_server::core::data_backend_t backend_;
 };

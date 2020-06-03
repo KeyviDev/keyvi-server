@@ -1,13 +1,20 @@
 #!/usr/bin/env bash
 set -ex
 
-pyenv global ${PYTHON_VERSION}
+cd /io
+
+mkdir build
+cd build
+cmake -DCMAKE_BUILD_TYPE=$CONF ..
+make -j 4
 
 cd /io/python
+
+pyenv global ${PYTHON_VERSION}
 
 pip install -r requirements.txt
 
 python setup.py build
 python setup.py install --user
-#py.test tests
-#py.test integration-tests
+
+py.test tests

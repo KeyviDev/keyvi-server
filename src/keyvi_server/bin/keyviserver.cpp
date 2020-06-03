@@ -36,6 +36,8 @@ brpc::RedisService* createRedisService(const keyvi_server::core::data_backend_t&
       "mset", new keyvi_server::service::redis::CommandHandler::MSetCommandHandler(redis_service_impl));
   redis_service_impl->AddCommandHandler(
       "get", new keyvi_server::service::redis::CommandHandler::GetCommandHandler(redis_service_impl));
+  redis_service_impl->AddCommandHandler(
+      "save", new keyvi_server::service::redis::CommandHandler::SaveCommandHandler(redis_service_impl));
 
   return redis_service_impl;
 }
