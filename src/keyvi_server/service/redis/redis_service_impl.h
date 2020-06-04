@@ -25,11 +25,11 @@
 #ifndef KEYVI_SERVER_SERVICE_REDIS_REDIS_SERVICE_IMPL_H_
 #define KEYVI_SERVER_SERVICE_REDIS_REDIS_SERVICE_IMPL_H_
 
-#include <brpc/redis.h>
-
 #include <map>
 #include <memory>
 #include <string>
+
+#include <brpc/redis.h>
 
 #include "keyvi_server/core/data_backend.h"
 
@@ -46,6 +46,8 @@ class RedisServiceImpl : public brpc::RedisService {
   bool Get(const std::string& key, std::string* value);
 
   bool MSet(const std::shared_ptr<std::map<std::string, std::string>>& key_values);
+
+  bool Save();
 
  private:
   keyvi_server::core::data_backend_t backend_;

@@ -6,19 +6,16 @@ cd build
 cmake -DCMAKE_BUILD_TYPE=release -DZLIB_ROOT=/usr/local/opt/zlib ..
 make -j 4 || travis_terminate 1;
 
-#cd ..
+cd ..
 
+export TMPDIR=/Volumes/ram-disk
 
-#export TMPDIR=/Volumes/ram-disk
+cd python
 
-#cd python
-#python setup.py bdist_wheel -d wheelhouse
+python -m pip install -r requirements.txt
+python -m pip install redis
 
-# check that static linkage worked by uninstalling libraries
-#brew remove zlib
-#brew remove snappy
+python setup.py build
+python setup.py install --user
 
-#sudo -H pip install wheelhouse/*.whl
-#py.test tests
-#py.test integration-tests
-#cd ..
+python -m pytest tests || travis_terminate 1;

@@ -25,12 +25,12 @@
 #ifndef KEYVI_SERVER_SERVICE_REDIS_COMMAND_HANDLER_H_
 #define KEYVI_SERVER_SERVICE_REDIS_COMMAND_HANDLER_H_
 
-#include <brpc/redis.h>
-
 #include <map>
 #include <memory>
 #include <string>
 #include <vector>
+
+#include <brpc/redis.h>
 
 #include "keyvi_server/service/redis/redis_service_impl.h"
 
@@ -108,6 +108,21 @@ class CommandHandler {
       }
 
       redis_service_impl_->MSet(key_values);
+      output->SetStatus("OK");
+      return brpc::REDIS_CMD_HANDLED;
+    }
+
+   private:
+    RedisServiceImpl* redis_service_impl_;
+  };
+
+  class SaveCommandHandler : public brpc::RedisCommandHandler {
+   public:
+    explicit SaveCommandHandler(RedisServiceImpl* rsimpl) : redis_service_impl_(rsimpl) {}
+
+    brpc::RedisCommandHandlerResult Run(const std::vector<const char*>& args, brpc::RedisReply* output,
+                                        bool /*flush_batched*/) override {
+      redis_service_impl_->Save();
       output->SetStatus("OK");
       return brpc::REDIS_CMD_HANDLED;
     }

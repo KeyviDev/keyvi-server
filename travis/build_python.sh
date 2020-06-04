@@ -1,13 +1,21 @@
 #!/usr/bin/env bash
 set -ex
 
-pyenv global ${PYTHON_VERSION}
+cd /io
+
+mkdir build
+cd build
+cmake -DCMAKE_BUILD_TYPE=$CONF ..
+make -j 4
 
 cd /io/python
 
-pip install -r requirements.txt
+pyenv global ${PYTHON_VERSION}
+
+python -m pip install -r requirements.txt
+python -m pip install redis
 
 python setup.py build
 python setup.py install --user
-#py.test tests
-#py.test integration-tests
+
+python -m pytest tests

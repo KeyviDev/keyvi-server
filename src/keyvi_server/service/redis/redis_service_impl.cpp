@@ -50,6 +50,11 @@ bool RedisServiceImpl::MSet(const std::shared_ptr<std::map<std::string, std::str
   return true;
 }
 
+bool RedisServiceImpl::Save() {
+  backend_->GetIndex().Flush();
+  return true;
+}
+
 }  // namespace redis
 }  // namespace service
 }  // namespace keyvi_server
