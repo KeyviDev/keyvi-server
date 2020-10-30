@@ -1011,7 +1011,7 @@ FindMethodPropertyByURI(const std::string& uri_path, const Server* server,
     const Server::MethodProperty* mp =
         FindMethodPropertyByURIImpl(uri_path, server, unresolved_path);
     if (mp != NULL) {
-        if (mp->http_url != NULL) {
+        if (mp->http_url != NULL && !mp->params.allow_default_url) {
             // the restful method is accessed from its
             // default url (SERVICE/METHOD) which should be rejected.
             return NULL;
@@ -1099,7 +1099,7 @@ ParseResult ParseHttpMessage(butil::IOBuf *source, Socket *socket,
             }
             return result;
         } else if (socket->is_read_progressive() &&
-                   http_imsg->stage() >= HTTP_ON_HEADERS_COMPLELE) {
+                   http_imsg->stage() >= HTTP_ON_HEADERS_COMPLETE) {
             // header part of a progressively-read http message is complete,
             // go on to ProcessHttpXXX w/o waiting for full body.
             http_imsg->AddOneRefForStage2(); // released when body is fully read
