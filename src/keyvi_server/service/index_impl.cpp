@@ -83,7 +83,7 @@ void IndexImpl::Flush(google::protobuf::RpcController *cntl_base, const FlushReq
   brpc::ClosureGuard done_guard(done);
   brpc::Controller *cntl = static_cast<brpc::Controller *>(cntl_base);
 
-  backend_->GetIndex().Flush(request->async());
+  backend_->GetIndex().Flush(request->asynchronous());
 }
 
 void IndexImpl::ForceMerge(google::protobuf::RpcController *cntl_base, const ForceMergeRequest *request,

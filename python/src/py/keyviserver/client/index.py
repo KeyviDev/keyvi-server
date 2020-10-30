@@ -47,8 +47,8 @@ class Index(object):
         response = self.stub.Get(index_pb2.GetRequest(key=key))
         return json.loads(response.value) if response.value else None
 
-    def flush(self, async = False):
-        self.stub.Flush(index_pb2.FlushRequest(async=async))
+    def flush(self, asynchronous = False):
+        self.stub.Flush(index_pb2.FlushRequest(asynchronous=asynchronous))
 
     def force_merge(self, max_segments = 1):
         self.stub.ForceMerge(index_pb2.ForceMergeRequest(max_segments = max_segments))

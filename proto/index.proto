@@ -32,7 +32,7 @@ message ForceMergeRequest {
 }
 
 message FlushRequest {
-    optional bool async = 1 [default = false];
+    optional bool asynchronous = 1 [default = false];
 }
 
 message EmptyBodyResponse {
