@@ -15,7 +15,7 @@ class Index(object):
         try:
             self.info()
         except grpc.RpcError:
-            raise ConnectionError('Failed to connect') from None
+            raise ConnectionError('Failed to connect')
 
     def __setitem__(self, key, value):
         self.set(key, value)
