@@ -131,6 +131,81 @@ class CommandHandler {
    private:
     RedisServiceImpl* redis_service_impl_;
   };
+
+  class DeleteCommandHandler : public brpc::RedisCommandHandler {
+   public:
+    explicit DeleteCommandHandler(RedisServiceImpl* rsimpl) : redis_service_impl_(rsimpl) {}
+
+    brpc::RedisCommandHandlerResult Run(const std::vector<butil::StringPiece>& args, brpc::RedisReply* output,
+                                        bool /*flush_batched*/) override {
+      if (args.size() < 2ul) {
+        output->FormatError("Expected at least 1 arg for 'del'");
+        return brpc::REDIS_CMD_HANDLED;
+      }
+
+      int64_t deletes = 0;
+      for (size_t i = 1; i < args.size(); ++i) {
+        redis_service_impl_->Delete(args[i].as_string());
+        ++deletes;
+      }
+
+      output->SetInteger(deletes);
+      return brpc::REDIS_CMD_HANDLED;
+    }
+
+   private:
+    RedisServiceImpl* redis_service_impl_;
+  };
+
+  class DumpCommandHandler : public brpc::RedisCommandHandler {
+   public:
+    explicit DumpCommandHandler(RedisServiceImpl* rsimpl) : redis_service_impl_(rsimpl) {}
+
+    brpc::RedisCommandHandlerResult Run(const std::vector<butil::StringPiece>& args, brpc::RedisReply* output,
+                                        bool /*flush_batched*/) override {
+      if (args.size() != 2ul) {
+        output->FormatError("Expect 1 arg for 'dump', actually %lu", args.size() - 1);
+        return brpc::REDIS_CMD_HANDLED;
+      }
+      const std::string key(args[1].data(), args[1].size());
+      std::string value;
+      if (redis_service_impl_->Dump(key, &value)) {
+        output->SetString(value);
+      } else {
+        output->SetNullString();
+      }
+      return brpc::REDIS_CMD_HANDLED;
+    }
+
+   private:
+    RedisServiceImpl* redis_service_impl_;
+  };
+
+  class ExistsCommandHandler : public brpc::RedisCommandHandler {
+   public:
+    explicit ExistsCommandHandler(RedisServiceImpl* rsimpl) : redis_service_impl_(rsimpl) {}
+
+    brpc::RedisCommandHandlerResult Run(const std::vector<butil::StringPiece>& args, brpc::RedisReply* output,
+                                        bool /*flush_batched*/) override {
+      if (args.size() < 2ul) {
+        output->FormatError("Expected at least 1 arg for 'exists'");
+        return brpc::REDIS_CMD_HANDLED;
+      }
+
+      int64_t found = 0;
+      for (size_t i = 1; i < args.size(); ++i) {
+        if (redis_service_impl_->Exists(args[i].as_string())) {
+          ++found;
+        }
+      }
+
+      output->SetInteger(found);
+      return brpc::REDIS_CMD_HANDLED;
+    }
+
+   private:
+    RedisServiceImpl* redis_service_impl_;
+  };
 };
 
 }  // namespace redis

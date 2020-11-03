@@ -26,7 +26,6 @@
 
 #include <brpc/closure_guard.h>
 #include <brpc/controller.h>
-
 #include <google/protobuf/map.h>
 
 #include <memory>
@@ -46,14 +45,40 @@ void IndexImpl::Info(google::protobuf::RpcController *cntl_base, const InfoReque
   (*response->mutable_info())["version"] = "0.0.1";
 }
 
-void IndexImpl::Get(google::protobuf::RpcController *cntl_base, const GetRequest *request, GetResponse *response,
-                    google::protobuf::Closure *done) {
+void IndexImpl::Delete(google::protobuf::RpcController *cntl_base, const DeleteRequest *request,
+                       EmptyBodyResponse *response, google::protobuf::Closure *done) {
+  brpc::ClosureGuard done_guard(done);
+  brpc::Controller *cntl = static_cast<brpc::Controller *>(cntl_base);
+
+  backend_->GetIndex().Delete(request->key());
+}
+
+void IndexImpl::Contains(google::protobuf::RpcController *cntl_base, const ContainsRequest *request,
+                         ContainsResponse *response, google::protobuf::Closure *done) {
+  brpc::ClosureGuard done_guard(done);
+  brpc::Controller *cntl = static_cast<brpc::Controller *>(cntl_base);
+
+  response->set_contains(backend_->GetIndex().Contains(request->key()));
+}
+
+void IndexImpl::Get(google::protobuf::RpcController *cntl_base, const GetRequest *request,
+                    StringValueResponse *response, google::protobuf::Closure *done) {
   brpc::ClosureGuard done_guard(done);
   brpc::Controller *cntl = static_cast<brpc::Controller *>(cntl_base);
 
   keyvi::dictionary::Match match = backend_->GetIndex()[request->key()];
 
   response->set_value(match.GetValueAsString());
+}
+
+void IndexImpl::GetRaw(google::protobuf::RpcController *cntl_base, const GetRawRequest *request,
+                       StringValueResponse *response, google::protobuf::Closure *done) {
+  brpc::ClosureGuard done_guard(done);
+  brpc::Controller *cntl = static_cast<brpc::Controller *>(cntl_base);
+
+  keyvi::dictionary::Match match = backend_->GetIndex()[request->key()];
+
+  response->set_value(match.GetRawValueAsString());
 }
 
 void IndexImpl::Set(google::protobuf::RpcController *cntl_base, const SetRequest *request, EmptyBodyResponse *response,

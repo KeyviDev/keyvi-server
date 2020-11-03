@@ -30,6 +30,13 @@ namespace redis {
 
 RedisServiceImpl::RedisServiceImpl(const keyvi_server::core::data_backend_t& backend) : backend_(backend) {}
 
+bool RedisServiceImpl::Delete(const std::string& key) {
+  backend_->GetIndex().Delete(key);
+  return true;
+}
+
+bool RedisServiceImpl::Exists(const std::string& key) { return backend_->GetIndex().Contains(key); }
+
 bool RedisServiceImpl::Set(const std::string& key, const std::string& value) {
   backend_->GetIndex().Set(key, value);
   return true;
@@ -42,6 +49,16 @@ bool RedisServiceImpl::Get(const std::string& key, std::string* value) {
     return false;
   }
   *value = match.GetValueAsString();
+  return true;
+}
+
+bool RedisServiceImpl::Dump(const std::string& key, std::string* value) {
+  keyvi::dictionary::Match match = backend_->GetIndex()[key];
+
+  if (match.IsEmpty()) {
+    return false;
+  }
+  *value = match.GetRawValueAsString();
   return true;
 }
 

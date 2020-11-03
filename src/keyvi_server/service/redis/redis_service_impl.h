@@ -41,9 +41,15 @@ class RedisServiceImpl : public brpc::RedisService {
  public:
   explicit RedisServiceImpl(const keyvi_server::core::data_backend_t& backend);
 
+  bool Delete(const std::string& key);
+
+  bool Exists(const std::string& key);
+
   bool Set(const std::string& key, const std::string& value);
 
   bool Get(const std::string& key, std::string* value);
+
+  bool Dump(const std::string& key, std::string* value);
 
   bool MSet(const std::shared_ptr<std::map<std::string, std::string>>& key_values);
 

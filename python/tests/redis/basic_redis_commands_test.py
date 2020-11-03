@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # Usage: py.test tests
 
+import json
 import os
 import pytest
 import subprocess
@@ -59,4 +60,42 @@ def test_mset(keyvi_server):
 
     assert r.get("a") == b"1"
     assert r.get("b") == b"2"
+
+
+def test_crud(keyvi_server):
+    r = redis.Redis(host='localhost', port=keyvi_server, db=0)
+    r.set("a", json.dumps({"a":42}))
+    r.save()
+    assert r.exists("a")
+    v = r.get("a")
+    assert v is not None
+    assert json.loads(v) == {"a": 42}
+    r.set("a", json.dumps({"a":42, "b":2}))
+    r.save()
+    v = r.get("a")
+    assert v is not None
+    assert json.loads(v) == {"a": 42, "b":2}
+    r.delete("a")
+    r.save()
+    assert r.exists("a") == False
+    v = r.get("a")
+    assert v is None
+
+
+def test_delete(keyvi_server):
+    r = redis.Redis(host='localhost', port=keyvi_server, db=0)
+    r.mset({"a":json.dumps({"x":22, "y": 34}), "b":json.dumps({"x":99, "y": 32}), "c":json.dumps({"x":12, "y": 54}), "d":json.dumps({"x":21, "y": 66})})
+    r.save()
+    assert r.exists("a", "b", "c", "d") == 4
+    assert r.exists("a", "b", "c", "d", "e", "f") == 4
+    assert r.exists("a", "b", "d", "e", "f") == 3
+    assert r.exists("d") == 1
+    assert r.delete("a", "b") == 2
+    r.save()
+    assert r.exists("a", "b", "c", "d") == 2
+    # delete always returns the number of keys, as it works async
+    assert r.delete("a", "b") == 2
+    assert r.delete("a", "b", "c", "d") == 4
+    r.save()
+    assert r.exists("a", "b", "c", "d") == 0
 
