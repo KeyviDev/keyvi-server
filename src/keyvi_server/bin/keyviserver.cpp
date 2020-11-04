@@ -45,7 +45,6 @@ brpc::RedisService* createRedisService(const keyvi_server::core::data_backend_t&
   redis_service_impl->AddCommandHandler(
       "dump", new keyvi_server::service::redis::CommandHandler::DumpCommandHandler(redis_service_impl));
 
-
   return redis_service_impl;
 }
 
