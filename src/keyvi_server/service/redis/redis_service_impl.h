@@ -29,7 +29,7 @@
 #include <memory>
 #include <string>
 
-#include <brpc/redis.h>
+#include "brpc/redis.h"
 
 #include "keyvi_server/core/data_backend.h"
 
