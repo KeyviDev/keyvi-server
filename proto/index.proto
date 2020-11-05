@@ -14,14 +14,26 @@ message GetRequest {
     required string key = 1;
 };
 
-message GetResponse {
-    required string value = 1;
+message GetRawRequest {
+    required string key = 1;
 };
 
 message SetRequest {
     required string key = 1;
     required string value = 2;
 };
+
+message DeleteRequest {
+    required string key = 1;
+}
+
+message ContainsRequest {
+    required string key = 1;
+};
+
+message ContainsResponse {
+    required bool contains = 1;
+}
 
 message MSetRequest {
     map<string, string> key_values = 1;
@@ -38,9 +50,16 @@ message FlushRequest {
 message EmptyBodyResponse {
 };
 
+message StringValueResponse {
+    required string value = 1;
+};
+
 service Index {
+    rpc Delete(DeleteRequest) returns (EmptyBodyResponse);
+    rpc GetRaw(GetRawRequest) returns (StringValueResponse);
+    rpc Contains(ContainsRequest) returns (ContainsResponse);
     rpc Info(InfoRequest) returns (InfoResponse);
-    rpc Get(GetRequest) returns (GetResponse);
+    rpc Get(GetRequest) returns (StringValueResponse);
     rpc Set(SetRequest) returns (EmptyBodyResponse);
     rpc MSet(MSetRequest) returns (EmptyBodyResponse);
     rpc ForceMerge(ForceMergeRequest) returns (EmptyBodyResponse);

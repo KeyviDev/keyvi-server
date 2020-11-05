@@ -17,10 +17,10 @@
 
 #include <memory>
 
-#include <brpc/server.h>
-#include <butil/logging.h>
-
 #include <boost/program_options.hpp>
+
+#include "brpc/server.h"
+#include "butil/logging.h"
 
 #include "keyvi_server/core/data_backend.h"
 #include "keyvi_server/service/index_impl.h"
@@ -38,6 +38,12 @@ brpc::RedisService* createRedisService(const keyvi_server::core::data_backend_t&
       "get", new keyvi_server::service::redis::CommandHandler::GetCommandHandler(redis_service_impl));
   redis_service_impl->AddCommandHandler(
       "save", new keyvi_server::service::redis::CommandHandler::SaveCommandHandler(redis_service_impl));
+  redis_service_impl->AddCommandHandler(
+      "exists", new keyvi_server::service::redis::CommandHandler::ExistsCommandHandler(redis_service_impl));
+  redis_service_impl->AddCommandHandler(
+      "del", new keyvi_server::service::redis::CommandHandler::DeleteCommandHandler(redis_service_impl));
+  redis_service_impl->AddCommandHandler(
+      "dump", new keyvi_server::service::redis::CommandHandler::DumpCommandHandler(redis_service_impl));
 
   return redis_service_impl;
 }
