@@ -17,10 +17,10 @@
 
 #include <memory>
 
-#include <brpc/server.h>
-#include <butil/logging.h>
-
 #include <boost/program_options.hpp>
+
+#include "brpc/server.h"
+#include "butil/logging.h"
 
 #include "keyvi_server/core/data_backend.h"
 #include "keyvi_server/service/index_impl.h"
