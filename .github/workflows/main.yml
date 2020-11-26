@@ -29,6 +29,5 @@ jobs:
         with:
           cmakeListsOrSettingsJson: CMakeListsTxtAdvanced
           cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
-          cmakeAppendedArgs: '-DCMAKE_BUILD_TYPE=Release'
-          buildWithCMakeArgs: '-- -v'
-          buildDirectory: '${{ github.workspace }}/build/'
+          cmakeBuildType: Release   
+          buildWithCMake: true
