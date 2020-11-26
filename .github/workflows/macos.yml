@@ -41,7 +41,7 @@ jobs:
           tar -zxf boost_1_72_0.tar.gz
           cd boost_1_72_0
           mkdir -p installdir
-          ./bootstrap.sh --prefix=./installdir --with-libraries=filesystem,system,test,program_options,iostreams,regex,thread
+          ./bootstrap.sh --prefix=./installdir --with-libraries=filesystem,system,test,program_options,iostreams,regex,thread,date_time,atomic
           ./b2 install
       - name: checkout from git
         uses: actions/checkout@v2
@@ -52,4 +52,5 @@ jobs:
           cmakeListsOrSettingsJson: CMakeListsTxtAdvanced
           cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
           cmakeBuildType: ${{matrix.buildname}}   
+          cmakeAppendedArgs: -D-DBOOST_ROOT=boost_1_72_0/installdir
           buildWithCMake: true
