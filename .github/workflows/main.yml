@@ -22,4 +22,7 @@ jobs:
       image: keyvidev/ubuntu-builder
     steps:
       - uses: actions/checkout@v2
-      - run: travis/build_linux.sh
+      - name: build cmake
+        uses: ashutoshvarma/action-cmake-build@v1
+        with:
+          build-type: release
