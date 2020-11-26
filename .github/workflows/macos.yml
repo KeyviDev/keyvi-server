@@ -52,5 +52,5 @@ jobs:
           cmakeListsOrSettingsJson: CMakeListsTxtAdvanced
           cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
           cmakeBuildType: ${{matrix.buildname}}   
-          cmakeAppendedArgs: -DBOOST_ROOT=boost_1_72_0/installdir
+          cmakeAppendedArgs: '-DBOOST_ROOT=${{ github.workspace }}/boost_1_72_0/installdir'
           buildWithCMake: true
