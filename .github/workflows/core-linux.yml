@@ -18,6 +18,15 @@ jobs:
   # This workflow contains a single job called "build"
   build:
     runs-on: ubuntu-latest
+    name: ${{matrix.buildname}}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - buildname: 'linux / release'
+            type: Release
+          - buildname: 'linux / debug'
+            type: Debug
     container:
       image: keyvidev/ubuntu-builder
     steps:
@@ -29,5 +38,5 @@ jobs:
         with:
           cmakeListsOrSettingsJson: CMakeListsTxtAdvanced
           cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
-          cmakeBuildType: Release   
+          cmakeBuildType: ${{matrix.buildname}}   
           buildWithCMake: true
