@@ -25,6 +25,10 @@ jobs:
             type: Release
           - buildname: 'linux / debug'
             type: Debug  
+    env:
+      PROTO_MAJOR: 3 
+      PROTO_MINOR: 11 
+      PROTO_PATCH: 4
     steps:
       - name: install deps
         run: |
@@ -48,11 +52,7 @@ jobs:
           ./b2 -d0 --prefix=./install install
       - name: Cache protobuf
         id: cache-protobuf
-        uses: actions/cache@v1
-        env:
-          PROTO_MAJOR: 3 
-          PROTO_MINOR: 11 
-          PROTO_PATCH: 4
+        uses: actions/cache@v1  
         with:
           path: protobuf-${{ env.PROTO_MAJOR }}.${{ env.PROTO_MINOR }}.${{ env.PROTO_PATCH }}/install
           key: ${{ runner.os }}-protobuf-${{ env.PROTO_MAJOR }}-${{ env.PROTO_MINOR }}-${{ env.PROTO_PATCH }}-keyviserver
