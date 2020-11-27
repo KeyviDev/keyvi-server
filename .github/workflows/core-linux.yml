@@ -54,14 +54,14 @@ jobs:
           minor: 11
           patch: 4
         with:
-          path: protobuf-${{ major }}.${{ minor }}.${{ patch }}/install
-          key: ${{ runner.os }}-protobuf-${{ major }}-${{ minor }}-${{ patch }}-keyviserver
+          path: protobuf-${{ env.major }}.${{ env.minor }}.${{ env.patch }}/install
+          key: ${{ runner.os }}-protobuf-${{ env.major }}-${{ env.minor }}-${{ env.patch }}-keyviserver
       - name: Install Protobuf
         if: steps.cache-protobuf.outputs.cache-hit != 'true'
         run: |
-          wget https://github.com/google/protobuf/releases/download/v${{ major }}.${{ minor }}.${{ patch }}/protobuf-cpp-${{ major }}.${{ minor }}.${{ patch }}.tar.gz
-          tar -zxvf protobuf-cpp-${{ major }}.${{ minor }}.${{ patch }}.tar.gz
-          cd protobuf-${{ major }}.${{ minor }}.${{ patch }}
+          wget https://github.com/google/protobuf/releases/download/v${{ env.major }}.${{ env.minor }}.${{ env.patch }}/protobuf-cpp-${{ env.major }}.${{ env.minor }}.${{ env.patch }}.tar.gz
+          tar -zxvf protobuf-cpp-${{ env.major }}.${{ env.minor }}.${{ env.patch }}.tar.gz
+          cd protobuf-${{ env.major }}.${{ env.minor }}.${{ env.patch }}
           ./configure --prefix=./install
           make
           make install
