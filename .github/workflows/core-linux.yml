@@ -30,8 +30,7 @@ jobs:
         run: |
           apt-get update
           apt-get install -y libsnappy-dev libzzip-dev zlib1g-dev
-          apt-get install -y libssl-dev libgflags-dev libleveldb-dev libgoogle-perftools-dev
-          
+          apt-get install -y libssl-dev libgflags-dev libleveldb-dev libgoogle-perftools-dev         
       - name: Cache Boost
         id: cache-boost
         uses: actions/cache@v1
@@ -47,31 +46,31 @@ jobs:
           mkdir -p install
           ./bootstrap.sh --without-libraries=graph_parallel,python
           ./b2 -d0 --prefix=./install install
-      - name: Cache protobuf
-        id: cache-protobuf
-        uses: actions/cache@v1
-        with:
-          major: 3
-          minor: 11
-          patch: 4
-          path: protobuf-${{ major }}.${{ minor }}.${{ patch }}/install
-          key: ${{ runner.os }}-protobuf-${{ major }}_${{ minor }}_${{ patch }}-keyviserver
-      - name: Install Protobuf
-        if: steps.cache-protobuf.outputs.cache-hit != 'true'
-        run: |
-          wget https://github.com/google/protobuf/releases/download/v${{ major }}.${{ minor }}.${{ patch }}/protobuf-cpp-${{ major }}.${{ minor }}.${{ patch }}.tar.gz
-          tar -zxvf protobuf-cpp-${{ major }}.${{ minor }}.${{ patch }}.tar.gz
-          cd protobuf-${{ major }}.${{ minor }}.${{ patch }}
-          ./configure --prefix=./install && make && make install && ldconfig          
-          
-      - name: checkout from git
-        uses: actions/checkout@v2
-      
-      - name: build with cmake
-        uses: lukka/run-cmake@v3
-        with:
-          cmakeListsOrSettingsJson: CMakeListsTxtAdvanced
-          cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
-          cmakeBuildType: ${{matrix.buildname}}
-          cmakeAppendedArgs: '-DBOOST_ROOT=${{ github.workspace }}/boost_1_72_0/install -DPROTOBUF_PATH=${{ github.workspace }}/protobuf-3.11.4/install  -DBoost_DEBUG=ON'
-          buildWithCMake: true
+#      - name: Cache protobuf
+#        id: cache-protobuf
+#        uses: actions/cache@v1
+#        with:
+#          major: 3
+#          minor: 11
+#          patch: 4
+#          path: protobuf-${{ major }}.${{ minor }}.${{ patch }}/install
+#          key: ${{ runner.os }}-protobuf-${{ major }}_${{ minor }}_${{ patch }}-keyviserver
+#      - name: Install Protobuf
+#        if: steps.cache-protobuf.outputs.cache-hit != 'true'
+#        run: |
+#          wget https://github.com/google/protobuf/releases/download/v${{ major }}.${{ minor }}.${{ patch }}/protobuf-cpp-${{ major }}.${{ minor }}.${{ patch }}.tar.gz
+#          tar -zxvf protobuf-cpp-${{ major }}.${{ minor }}.${{ patch }}.tar.gz
+#          cd protobuf-${{ major }}.${{ minor }}.${{ patch }}
+#          ./configure --prefix=./install && make && make install && ldconfig          
+#          
+#      - name: checkout from git
+#        uses: actions/checkout@v2
+ #     
+ #     - name: build with cmake
+ #       uses: lukka/run-cmake@v3
+ #       with:
+ #         cmakeListsOrSettingsJson: CMakeListsTxtAdvanced
+ #         cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
+ #         cmakeBuildType: ${{matrix.buildname}}
+ #         cmakeAppendedArgs: '-DBOOST_ROOT=${{ github.workspace }}/boost_1_72_0/install -DPROTOBUF_PATH=${{ github.workspace }}/protobuf-3.11.4/install  -DBoost_DEBUG=ON'
+ #         buildWithCMake: true
