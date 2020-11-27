@@ -41,7 +41,7 @@ jobs:
         uses: actions/cache@v1
         with:
           path: boost_1_72_0/installdir
-          key: ${{ runner.os }}-boost_1_72_0-fs-system-test
+          key: ${{ runner.os }}-boost_1_72_0-keyviserver
       - name: Install Boost
         if: steps.cache-boost.outputs.cache-hit != 'true'
         run: |
@@ -49,8 +49,8 @@ jobs:
           tar -zxf boost_1_72_0.tar.gz
           cd boost_1_72_0
           mkdir -p installdir
-          ./bootstrap.sh --prefix=./installdir --with-libraries=filesystem,system,test,program_options,iostreams,regex,thread,date_time,atomic
-          ./b2 install
+          ./bootstrap.sh --without-libraries=graph_parallel,python
+          ./b2 -d0 --prefix=./installdir install
       - name: checkout from git
         uses: actions/checkout@v2
       
