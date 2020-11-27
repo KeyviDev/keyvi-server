@@ -50,7 +50,7 @@ jobs:
           cd boost_1_72_0
           mkdir -p installdir
           ./bootstrap.sh --without-libraries=graph_parallel,python
-          ./b2 -d0 --prefix=./installdir install
+          ./b2 -d0 --prefix=./installdir threading=multi,single link=shared,static install
       - name: checkout from git
         uses: actions/checkout@v2
       
