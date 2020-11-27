@@ -28,9 +28,9 @@ jobs:
     steps:
       - name: install deps
         run: |
-          apt-get update
-          apt-get install -y libsnappy-dev libzzip-dev zlib1g-dev
-          apt-get install -y libssl-dev libgflags-dev libleveldb-dev libgoogle-perftools-dev         
+          sudo apt-get update
+          sudo apt-get install -y libsnappy-dev libzzip-dev zlib1g-dev
+          sudo apt-get install -y libssl-dev libgflags-dev libleveldb-dev libgoogle-perftools-dev         
       - name: Cache Boost
         id: cache-boost
         uses: actions/cache@v1
