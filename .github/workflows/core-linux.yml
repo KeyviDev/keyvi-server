@@ -24,10 +24,46 @@ jobs:
           - buildname: 'linux / release'
             type: Release
           - buildname: 'linux / debug'
-            type: Debug
-    container:
-      image: keyvidev/ubuntu-builder
+            type: Debug  
     steps:
+      - name: install deps
+        run: |
+          apt-get update
+          apt-get install -y libsnappy-dev libzzip-dev zlib1g-dev
+          apt-get install -y libssl-dev libgflags-dev libleveldb-dev libgoogle-perftools-dev
+          
+      - name: Cache Boost
+        id: cache-boost
+        uses: actions/cache@v1
+        with:
+          path: boost_1_72_0/install
+          key: ${{ runner.os }}-boost_1_72_0-keyviserver
+      - name: Install Boost
+        if: steps.cache-boost.outputs.cache-hit != 'true'
+        run: |
+          wget https://dl.bintray.com/boostorg/release/1.72.0/source/boost_1_72_0.tar.gz
+          tar -zxf boost_1_72_0.tar.gz
+          cd boost_1_72_0
+          mkdir -p install
+          ./bootstrap.sh --without-libraries=graph_parallel,python
+          ./b2 -d0 --prefix=./install install
+      - name: Cache protobuf
+        id: cache-protobuf
+        uses: actions/cache@v1
+        with:
+          major: 3
+          minor: 11
+          patch: 4
+          path: protobuf-${{ major }}.${{ minor }}.${{ patch }}/install
+          key: ${{ runner.os }}-protobuf-${{ major }}_${{ minor }}_${{ patch }}-keyviserver
+      - name: Install Protobuf
+        if: steps.cache-protobuf.outputs.cache-hit != 'true'
+        run: |
+          wget https://github.com/google/protobuf/releases/download/v${{ major }}.${{ minor }}.${{ patch }}/protobuf-cpp-${{ major }}.${{ minor }}.${{ patch }}.tar.gz
+          tar -zxvf protobuf-cpp-${{ major }}.${{ minor }}.${{ patch }}.tar.gz
+          cd protobuf-${{ major }}.${{ minor }}.${{ patch }}
+          ./configure --prefix=./install && make && make install && ldconfig          
+          
       - name: checkout from git
         uses: actions/checkout@v2
       
@@ -36,5 +72,6 @@ jobs:
         with:
           cmakeListsOrSettingsJson: CMakeListsTxtAdvanced
           cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
-          cmakeBuildType: ${{matrix.buildname}}   
+          cmakeBuildType: ${{matrix.buildname}}
+          cmakeAppendedArgs: '-DBOOST_ROOT=${{ github.workspace }}/boost_1_72_0/install -DPROTOBUF_PATH=${{ github.workspace }}/protobuf-3.11.4/install  -DBoost_DEBUG=ON'
           buildWithCMake: true
