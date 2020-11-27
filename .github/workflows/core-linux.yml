@@ -54,7 +54,7 @@ jobs:
           minor: 11
           patch: 4
           path: protobuf-${{ major }}.${{ minor }}.${{ patch }}/install
-          key: ${{ runner.os }}-protobuf-${{ major }}_${{ minor }}_${{ patch }}-keyviserver
+          key: ${{ runner.os }}-protobuf-3_11_4-keyviserver
       - name: Install Protobuf
         if: steps.cache-protobuf.outputs.cache-hit != 'true'
         run: |
