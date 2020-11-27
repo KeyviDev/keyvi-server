@@ -66,15 +66,14 @@ jobs:
           make
           make install
           
-#          
-#      - name: checkout from git
-#        uses: actions/checkout@v2
- #     
- #     - name: build with cmake
- #       uses: lukka/run-cmake@v3
- #       with:
- #         cmakeListsOrSettingsJson: CMakeListsTxtAdvanced
- #         cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
- #         cmakeBuildType: ${{matrix.buildname}}
- #         cmakeAppendedArgs: '-DBOOST_ROOT=${{ github.workspace }}/boost_1_72_0/install -DPROTOBUF_PATH=${{ github.workspace }}/protobuf-3.11.4/install  -DBoost_DEBUG=ON'
- #         buildWithCMake: true
+      - name: checkout from git
+        uses: actions/checkout@v2
+      
+      - name: build with cmake
+        uses: lukka/run-cmake@v3
+        with:
+          cmakeListsOrSettingsJson: CMakeListsTxtAdvanced
+          cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
+          cmakeBuildType: ${{matrix.buildname}}
+          cmakeAppendedArgs: '-DBOOST_ROOT=${{ github.workspace }}/boost_1_72_0/install -DPROTOBUF_PATH=${{ github.workspace }}/protobuf-3.11.4/install  -DBoost_DEBUG=ON'
+          buildWithCMake: true
