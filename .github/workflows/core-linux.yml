@@ -59,7 +59,7 @@ jobs:
       - name: Install Protobuf
         if: steps.cache-protobuf.outputs.cache-hit != 'true'
         run: |
-          wget "https://github.com/google/protobuf/releases/download/v$PROTO_MAJOR.$PROTO_MINOR.$PROTO_PATCH/protobuf-cpp-$PROTO_MAJOR.$PROTO_MINOR.$PROTO_PATCH.tar.gz"
+          wget https://github.com/google/protobuf/releases/download/v$PROTO_MAJOR.$PROTO_MINOR.$PROTO_PATCH/protobuf-cpp-$PROTO_MAJOR.$PROTO_MINOR.$PROTO_PATCH.tar.gz
           tar -zxvf protobuf-cpp-$PROTO_MAJOR.$PROTO_MINOR.$PROTO_PATCH.tar.gz
           cd protobuf-$PROTO_MAJOR.$PROTO_MINOR.$PROTO_PATCH
           ./configure --prefix=./install
