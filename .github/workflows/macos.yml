@@ -35,7 +35,7 @@ jobs:
           brew install snappy
           brew install openssl gnu-getopt coreutils
           brew install gflags protobuf leveldb
-          brew install gperftool
+          brew install gperftools
       - name: Cache Boost
         id: cache-boost
         uses: actions/cache@v1
