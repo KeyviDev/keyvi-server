@@ -50,18 +50,18 @@ jobs:
         id: cache-protobuf
         uses: actions/cache@v1
         env:
-          major: 3
-          minor: 11
-          patch: 4
+          PROTO_MAJOR: 3 
+          PROTO_MINOR: 11 
+          PROTO_PATCH: 4
         with:
-          path: protobuf-${{ env.major }}.${{ env.minor }}.${{ env.patch }}/install
-          key: ${{ runner.os }}-protobuf-${{ env.major }}-${{ env.minor }}-${{ env.patch }}-keyviserver
+          path: protobuf-${{ env.PROTO_MAJOR }}.${{ env.PROTO_MINOR }}.${{ env.PROTO_PATCH }}/install
+          key: ${{ runner.os }}-protobuf-${{ env.PROTO_MAJOR }}-${{ env.PROTO_MINOR }}-${{ env.PROTO_PATCH }}-keyviserver
       - name: Install Protobuf
         if: steps.cache-protobuf.outputs.cache-hit != 'true'
         run: |
-          wget "https://github.com/google/protobuf/releases/download/v${{env.major}}.${{env.minor}}.${{env.patch}}/protobuf-cpp-${{env.major}}.${{env.minor}}.${{env.patch}}.tar.gz"
-          tar -zxvf protobuf-cpp-${{ env.major }}.${{ env.minor }}.${{ env.patch }}.tar.gz
-          cd protobuf-${{ env.major }}.${{ env.minor }}.${{ env.patch }}
+          wget "https://github.com/google/protobuf/releases/download/v$PROTO_MAJOR.$PROTO_MINOR.$PROTO_PATCH/protobuf-cpp-$PROTO_MAJOR.$PROTO_MINOR.$PROTO_PATCH.tar.gz"
+          tar -zxvf protobuf-cpp-$PROTO_MAJOR.$PROTO_MINOR.$PROTO_PATCH.tar.gz
+          cd protobuf-$PROTO_MAJOR.$PROTO_MINOR.$PROTO_PATCH
           ./configure --prefix=./install
           make
           make install
