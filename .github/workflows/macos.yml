@@ -28,6 +28,14 @@ jobs:
             
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
+      - name: Install dependencies from brew
+        run: |
+          brew update
+          brew install zlib
+          brew install snappy
+          brew install openssl gnu-getopt coreutils
+          brew install gflags protobuf leveldb
+          brew install gperftool
       - name: Cache Boost
         id: cache-boost
         uses: actions/cache@v1
@@ -52,5 +60,5 @@ jobs:
           cmakeListsOrSettingsJson: CMakeListsTxtAdvanced
           cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
           cmakeBuildType: ${{matrix.buildname}}   
-          cmakeAppendedArgs: '-DBOOST_ROOT=${{ github.workspace }}/boost_1_72_0/installdir'
+          cmakeAppendedArgs: '-DBOOST_ROOT=${{ github.workspace }}/boost_1_72_0/installdir -DBoost_DEBUG=ON'
           buildWithCMake: true
