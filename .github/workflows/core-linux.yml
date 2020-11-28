@@ -47,9 +47,9 @@ jobs:
           wget https://dl.bintray.com/boostorg/release/1.72.0/source/boost_1_72_0.tar.gz
           tar -zxf boost_1_72_0.tar.gz
           cd boost_1_72_0
-          mkdir -p install
+          mkdir -p $GITHUB_WORKSPACE/boost/install
           ./bootstrap.sh --without-libraries=graph_parallel,python
-          ./b2 -d0 --prefix=./install install
+          ./b2 -d0 --prefix=$GITHUB_WORKSPACE/boost/install install
       - name: Cache protobuf
         id: cache-protobuf
         uses: actions/cache@v1  
@@ -75,5 +75,5 @@ jobs:
           cmakeListsOrSettingsJson: CMakeListsTxtAdvanced
           cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
           cmakeBuildType: ${{matrix.buildname}}
-          cmakeAppendedArgs: '-DBOOST_ROOT=${{ github.workspace }}/boost_1_72_0/install -DCMAKE_PREFIX_PATH=${{ github.workspace }}/protobuf-3.11.4/install  -DBoost_DEBUG=ON'
+          cmakeAppendedArgs: '-DBOOST_ROOT=${{ github.workspace }}/boost/install -DCMAKE_PREFIX_PATH=${{ github.workspace }}/protobuf-3.11.4/install  -DBoost_DEBUG=ON'
           buildWithCMake: true
