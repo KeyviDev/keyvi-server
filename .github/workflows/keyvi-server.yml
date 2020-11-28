@@ -16,17 +16,12 @@ on:
 jobs:
   build:
     runs-on: ${{matrix.os}}
-    name: ${{matrix.buildname}}
+    name:  Keyvi-Server ${{ matrix.type }} on ${{ matrix.os }} build
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - buildname: 'linux / release'
-            os:  ubuntu-latest
-            type: Release
-          - buildname: 'linux / debug'
-            os:  ubuntu-latest
-            type: Debug  
+        type: ['Release', 'Debug']
+        os: ['macos-latest']
     env:
       BOOST_MAJOR: 1
       BOOST_MINOR: 73
@@ -35,11 +30,17 @@ jobs:
       PROTO_MINOR: 11
       PROTO_PATCH: 4
     steps:
-      - name: install deps
+      - name: install Linux deps
+        if: runner.os == 'Linux'
         run: |
           sudo apt-get update
           sudo apt-get install -y libsnappy-dev libzzip-dev zlib1g-dev
-          sudo apt-get install -y libssl-dev libgflags-dev libleveldb-dev libgoogle-perftools-dev         
+          sudo apt-get install -y libssl-dev libgflags-dev libleveldb-dev libgoogle-perftools-dev
+      - name: install macOS deps
+        if: runner.os == 'macOS'
+        run: |
+          brew update
+          brew install zlib snappy openssl gnu-getopt coreutils gflags leveldb gperftools       
       - name: checkout from git
         uses: actions/checkout@v2
       - name: Cache Boost
