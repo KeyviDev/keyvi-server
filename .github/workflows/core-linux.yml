@@ -35,16 +35,16 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y libsnappy-dev libzzip-dev zlib1g-dev
           sudo apt-get install -y libssl-dev libgflags-dev libleveldb-dev libgoogle-perftools-dev         
+      - name: checkout from git
+        uses: actions/checkout@v2
       - name: Cache Boost
         id: cache-boost
         uses: actions/cache@v1
         with:
           path: boost_1_72_0/install
           key: ${{ runner.os }}-boost_1_72_0-keyvi
-      - name: checkout from git
-        uses: actions/checkout@v2
       - name: Install Boost
-        #if: steps.cache-boost.outputs.cache-hit != 'true'
+        if: steps.cache-boost.outputs.cache-hit != 'true'
         run: |
           wget https://dl.bintray.com/boostorg/release/1.72.0/source/boost_1_72_0.tar.gz
           tar -zxf boost_1_72_0.tar.gz
