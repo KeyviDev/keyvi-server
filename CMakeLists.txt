@@ -65,7 +65,7 @@ target_link_libraries(keyviserver
         Boost::program_options Boost::iostreams Boost::filesystem Boost::system Boost::regex Boost::thread brpc-shared keyvi
 )
 # not ideal but the BRPC cmake module does not export includes properly yet
-target_include_directories(keyviserver PRIVATE "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/src/3rdparty/brpc/output/include/>" ${OPENSSL_INCLUDE_DIR})
+target_include_directories(keyviserver PRIVATE "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/src/3rdparty/brpc/output/include/>" ${OPENSSL_INCLUDE_DIR} ${PROTOBUF_INCLUDE_DIRS})
 
 add_custom_target(merger-bin ALL
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:keyvimerger> ${CMAKE_BINARY_DIR}
