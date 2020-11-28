@@ -73,6 +73,7 @@ jobs:
           cmakeBuildType: Release
           cmakeAppendedArgs: '-DBOOST_ROOT=${{ github.workspace }}/boost_${{ env.BOOST_MAJOR }}_${{ env.BOOST_MINOR }}_${{ env.BOOST_PATCH }}/install -DCMAKE_PREFIX_PATH=${{ github.workspace }}/protobuf-$PROTO_MAJOR.$PROTO_MINOR.$PROTO_PATCH/install'
           buildWithCMake: true
+          buildDirectory: '${{ github.workspace }}/build'
       - name: Setup python
         uses: actions/setup-python@v2
         with:
