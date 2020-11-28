@@ -55,7 +55,7 @@ jobs:
           wget https://dl.bintray.com/boostorg/release/${BOOST_MAJOR}.${BOOST_MINOR}.${BOOST_PATCH}/source/boost_${BOOST_MAJOR}_${BOOST_MINOR}_${BOOST_PATCH}.tar.gz
           tar -zxf boost_${BOOST_MAJOR}_${BOOST_MINOR}_${BOOST_PATCH}.tar.gz
           cd boost_${BOOST_MAJOR}_${BOOST_MINOR}_${BOOST_PATCH}
-          mkdir -p $GITHUB_WORKSPACE/boost_${BOOST_MAJOR}_${BOOST_MINOR}_${BOOST_PATCH}/install
+          pwd
           ./bootstrap.sh --without-libraries=graph_parallel,python
           ./b2 --prefix=$GITHUB_WORKSPACE/boost_${BOOST_MAJOR}_${BOOST_MINOR}_${BOOST_PATCH}/install install
       - name: Cache protobuf
