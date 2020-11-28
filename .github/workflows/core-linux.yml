@@ -41,6 +41,8 @@ jobs:
 #        with:
 #          path: boost_1_72_0/install
 #          key: ${{ runner.os }}-boost_1_72_0-keyviserver
+      - name: checkout from git
+        uses: actions/checkout@v2
       - name: Install Boost
         #if: steps.cache-boost.outputs.cache-hit != 'true'
         run: |
@@ -66,8 +68,6 @@ jobs:
           make
           make install
           
-      - name: checkout from git
-        uses: actions/checkout@v2
       
       - name: build with cmake
         uses: lukka/run-cmake@v3
