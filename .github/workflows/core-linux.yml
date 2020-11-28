@@ -46,7 +46,7 @@ jobs:
         id: cache_boost
         uses: actions/cache@v2
         with:
-          path: boost-${{ env.BOOST_MAJOR }}_${{ env.BOOST_MINOR }}_${{ env.BOOST_PATCH }}/install
+          path: boost_${{ env.BOOST_MAJOR }}_${{ env.BOOST_MINOR }}_${{ env.BOOST_PATCH }}/install
           key: ${{ runner.os }}-${{ env.BOOST_MAJOR }}.${{ env.BOOST_MINOR }}.${{ env.BOOST_PATCH }}-keyvi
       - name: Install Boost
         if: steps.cache_boost.outputs.cache-hit != 'true'
@@ -78,5 +78,5 @@ jobs:
           cmakeListsOrSettingsJson: CMakeListsTxtAdvanced
           cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
           cmakeBuildType: ${{matrix.type}}
-          cmakeAppendedArgs: '-DBOOST_ROOT=${{ github.workspace }}/boost-${{ env.BOOST_MAJOR }}_${{ env.BOOST_MINOR }}_${{ env.BOOST_PATCH }}/install -DCMAKE_PREFIX_PATH=${{ github.workspace }}/protobuf-$PROTO_MAJOR.$PROTO_MINOR.$PROTO_PATCH/install'
+          cmakeAppendedArgs: '-DBOOST_ROOT=${{ github.workspace }}/boost_${{ env.BOOST_MAJOR }}_${{ env.BOOST_MINOR }}_${{ env.BOOST_PATCH }}/install -DCMAKE_PREFIX_PATH=${{ github.workspace }}/protobuf-$PROTO_MAJOR.$PROTO_MINOR.$PROTO_PATCH/install'
           buildWithCMake: true
