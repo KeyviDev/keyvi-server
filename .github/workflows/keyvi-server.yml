@@ -47,7 +47,7 @@ jobs:
         id: cache_boost
         uses: actions/cache@v2
         with:
-          path: boost_${{ env.BOOST_MAJOR }}_${{ env.BOOST_MINOR }}_${{ env.BOOST_PATCH }}/install
+          path: boost_${{ env.BOOST_MAJOR }}_${{ env.BOOST_MINOR }}_${{ env.BOOST_PATCH }}/installdir
           key: ${{ runner.os }}-${{ env.BOOST_MAJOR }}.${{ env.BOOST_MINOR }}.${{ env.BOOST_PATCH }}-keyvi
       - name: Install Boost
         if: steps.cache_boost.outputs.cache-hit != 'true'
@@ -57,14 +57,14 @@ jobs:
           ls -l
           cd boost_${BOOST_MAJOR}_${BOOST_MINOR}_${BOOST_PATCH}
           ls -l
-          mkdir install
+          mkdir -p $GITHUB_WORKSPACE/boost_${BOOST_MAJOR}_${BOOST_MINOR}_${BOOST_PATCH}/installdir
           ./bootstrap.sh --without-libraries=graph_parallel,python
-          ./b2 --prefix=$GITHUB_WORKSPACE/boost_${BOOST_MAJOR}_${BOOST_MINOR}_${BOOST_PATCH}/install install
+          ./b2 --prefix=$GITHUB_WORKSPACE/boost_${BOOST_MAJOR}_${BOOST_MINOR}_${BOOST_PATCH}/installdir install
       - name: Cache protobuf
         id: cache_protobuf
         uses: actions/cache@v2
         with:
-          path: protobuf-${{ env.PROTO_MAJOR }}.${{ env.PROTO_MINOR }}.${{ env.PROTO_PATCH }}/install
+          path: protobuf-${{ env.PROTO_MAJOR }}.${{ env.PROTO_MINOR }}.${{ env.PROTO_PATCH }}/installdir
           key: ${{ runner.os }}-protobuf-${{ env.PROTO_MAJOR }}-${{ env.PROTO_MINOR }}-${{ env.PROTO_PATCH }}-keyvi
       - name: Install Protobuf
         if: steps.cache_protobuf.outputs.cache-hit != 'true'
@@ -72,7 +72,7 @@ jobs:
           wget https://github.com/google/protobuf/releases/download/v$PROTO_MAJOR.$PROTO_MINOR.$PROTO_PATCH/protobuf-cpp-$PROTO_MAJOR.$PROTO_MINOR.$PROTO_PATCH.tar.gz
           tar -zxvf protobuf-cpp-$PROTO_MAJOR.$PROTO_MINOR.$PROTO_PATCH.tar.gz
           cd protobuf-$PROTO_MAJOR.$PROTO_MINOR.$PROTO_PATCH
-          ./configure --prefix=$GITHUB_WORKSPACE/protobuf-$PROTO_MAJOR.$PROTO_MINOR.$PROTO_PATCH/install
+          ./configure --prefix=$GITHUB_WORKSPACE/protobuf-$PROTO_MAJOR.$PROTO_MINOR.$PROTO_PATCH/installdir
           make
           make install
       - name: build with cmake
