@@ -21,7 +21,7 @@ jobs:
       fail-fast: false
       matrix:
         type: ['Release', 'Debug']
-        os: ['macos-latest']
+        os: ['macos-latest', 'ubuntu-latest']
     env:
       BOOST_MAJOR: 1
       BOOST_MINOR: 73
