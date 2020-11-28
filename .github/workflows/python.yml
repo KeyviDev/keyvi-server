@@ -18,7 +18,7 @@ jobs:
     strategy:
       matrix:
         python-version: [ '3.6', '3.7', '3.8' ]
-        os: [ 'ubuntu-latest' ]
+        os: [ 'macos-latest', 'ubuntu-latest' ]
     name: Python ${{ matrix.python-version }} on ${{ matrix.os }} build
     env:
       BOOST_MAJOR: 1
