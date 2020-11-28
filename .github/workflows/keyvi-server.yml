@@ -1,6 +1,6 @@
 # Build on Linux
 
-name: Build on Linux
+name: Build keyvi-server
 
 # Controls when the action will run. 
 on:
@@ -16,7 +16,7 @@ on:
 jobs:
   build:
     runs-on: ${{matrix.os}}
-    name:  Keyvi-Server ${{ matrix.type }} on ${{ matrix.os }} build
+    name:  ${{ matrix.type }} on ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
