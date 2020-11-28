@@ -49,7 +49,7 @@ jobs:
       - name: Install Boost
         if: steps.cache_boost.outputs.cache-hit != 'true'
         run: |
-          wget https://dl.bintray.com/boostorg/release/$BOOST_MAJOR.$BOOST_MINOR.$BOOST_PATCH/source/boost_$BOOST_MAJOR_$BOOST_MINOR_$BOOST_PATCH.tar.gz
+          wget https://dl.bintray.com/boostorg/release/$BOOST_MAJOR.$BOOST_MINOR.$BOOST_PATCH/source/boost_${BOOST_MAJOR}_${BOOST_MINOR}_${BOOST_PATCH}.tar.gz
           tar -zxf boost_$BOOST_MAJOR_$BOOST_MINOR_$BOOST_PATCH.tar.gz
           cd boost_$BOOST_MAJOR_$BOOST_MINOR_$BOOST_PATCH
           mkdir -p $GITHUB_WORKSPACE/boost_$BOOST_MAJOR_$BOOST_MINOR_$BOOST_PATCH/install
