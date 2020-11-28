@@ -15,15 +15,17 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ${{matrix.os}}
     name: ${{matrix.buildname}}
     strategy:
       fail-fast: false
       matrix:
         include:
           - buildname: 'linux / release'
+            os:  ubuntu-latest
             type: Release
           - buildname: 'linux / debug'
+            os:  ubuntu-latest
             type: Debug  
     env:
       BOOST_MAJOR: 1
@@ -44,17 +46,17 @@ jobs:
         id: cache_boost
         uses: actions/cache@v2
         with:
-          path: boost-${{ env.BOOST_MAJOR }}.${{ env.BOOST_MINOR }}.${{ env.BOOST_PATCH }}/install
+          path: boost-${{ env.BOOST_MAJOR }}_${{ env.BOOST_MINOR }}_${{ env.BOOST_PATCH }}/install
           key: ${{ runner.os }}-${{ env.BOOST_MAJOR }}.${{ env.BOOST_MINOR }}.${{ env.BOOST_PATCH }}-keyvi
       - name: Install Boost
         if: steps.cache_boost.outputs.cache-hit != 'true'
         run: |
-          wget https://dl.bintray.com/boostorg/release/$BOOST_MAJOR.$BOOST_MINOR.$BOOST_PATCH/source/boost_${BOOST_MAJOR}_${BOOST_MINOR}_${BOOST_PATCH}.tar.gz
-          tar -zxf boost_$BOOST_MAJOR_$BOOST_MINOR_$BOOST_PATCH.tar.gz
-          cd boost_$BOOST_MAJOR_$BOOST_MINOR_$BOOST_PATCH
-          mkdir -p $GITHUB_WORKSPACE/boost_$BOOST_MAJOR_$BOOST_MINOR_$BOOST_PATCH/install
+          wget https://dl.bintray.com/boostorg/release/${BOOST_MAJOR}.${BOOST_MINOR}.${BOOST_PATCH}/source/boost_${BOOST_MAJOR}_${BOOST_MINOR}_${BOOST_PATCH}.tar.gz
+          tar -zxf boost_${BOOST_MAJOR}_${BOOST_MINOR}_${BOOST_PATCH}.tar.gz
+          cd boost_${BOOST_MAJOR}_${BOOST_MINOR}_${BOOST_PATCH}
+          mkdir -p $GITHUB_WORKSPACE/boost_${BOOST_MAJOR}_${BOOST_MINOR}_${BOOST_PATCH}/install
           ./bootstrap.sh --without-libraries=graph_parallel,python
-          ./b2 --prefix=$GITHUB_WORKSPACE/boost_$BOOST_MAJOR_$BOOST_MINOR_$BOOST_PATCH/install install
+          ./b2 --prefix=$GITHUB_WORKSPACE/boost_${BOOST_MAJOR}_${BOOST_MINOR}_${BOOST_PATCH}/install install
       - name: Cache protobuf
         id: cache_protobuf
         uses: actions/cache@v2
