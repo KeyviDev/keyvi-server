@@ -1,0 +1,87 @@
+# Build python bindings
+name: Build python bindings
+
+# Controls when the action will run. 
+on:
+  # Triggers the workflow on push or pull request events but only for the master branch
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ${{matrix.os}}
+    strategy:
+      matrix:
+        python-version: [ '3.6', '3.7', '3.8' ]
+        os: [ 'ubuntu-latest' ]
+    name: Python ${{ matrix.python-version }} on ${{ matrix.os }} build
+    env:
+      BOOST_MAJOR: 1
+      BOOST_MINOR: 73
+      BOOST_PATCH: 0
+      PROTO_MAJOR: 3 
+      PROTO_MINOR: 11 
+      PROTO_PATCH: 4
+    steps:
+      - name: install deps
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libsnappy-dev libzzip-dev zlib1g-dev
+          sudo apt-get install -y libssl-dev libgflags-dev libleveldb-dev libgoogle-perftools-dev         
+      - name: checkout from git
+        uses: actions/checkout@v2
+      - name: Cache Boost
+        id: cache_boost
+        uses: actions/cache@v2
+        with:
+          path: boost_${{ env.BOOST_MAJOR }}_${{ env.BOOST_MINOR }}_${{ env.BOOST_PATCH }}/install
+          key: ${{ runner.os }}-${{ env.BOOST_MAJOR }}.${{ env.BOOST_MINOR }}.${{ env.BOOST_PATCH }}-keyvi
+      - name: Install Boost
+        if: steps.cache_boost.outputs.cache-hit != 'true'
+        run: |
+          wget https://dl.bintray.com/boostorg/release/${BOOST_MAJOR}.${BOOST_MINOR}.${BOOST_PATCH}/source/boost_${BOOST_MAJOR}_${BOOST_MINOR}_${BOOST_PATCH}.tar.gz
+          tar -zxf boost_${BOOST_MAJOR}_${BOOST_MINOR}_${BOOST_PATCH}.tar.gz
+          cd boost_${BOOST_MAJOR}_${BOOST_MINOR}_${BOOST_PATCH}
+          mkdir -p $GITHUB_WORKSPACE/boost_${BOOST_MAJOR}_${BOOST_MINOR}_${BOOST_PATCH}/install
+          ./bootstrap.sh --without-libraries=graph_parallel,python
+          ./b2 --prefix=$GITHUB_WORKSPACE/boost_${BOOST_MAJOR}_${BOOST_MINOR}_${BOOST_PATCH}/install install
+      - name: Cache protobuf
+        id: cache_protobuf
+        uses: actions/cache@v2
+        with:
+          path: protobuf-${{ env.PROTO_MAJOR }}.${{ env.PROTO_MINOR }}.${{ env.PROTO_PATCH }}/install
+          key: ${{ runner.os }}-protobuf-${{ env.PROTO_MAJOR }}-${{ env.PROTO_MINOR }}-${{ env.PROTO_PATCH }}-keyvi
+      - name: Install Protobuf
+        if: steps.cache_protobuf.outputs.cache-hit != 'true'
+        run: |
+          wget https://github.com/google/protobuf/releases/download/v$PROTO_MAJOR.$PROTO_MINOR.$PROTO_PATCH/protobuf-cpp-$PROTO_MAJOR.$PROTO_MINOR.$PROTO_PATCH.tar.gz
+          tar -zxvf protobuf-cpp-$PROTO_MAJOR.$PROTO_MINOR.$PROTO_PATCH.tar.gz
+          cd protobuf-$PROTO_MAJOR.$PROTO_MINOR.$PROTO_PATCH
+          ./configure --prefix=$GITHUB_WORKSPACE/protobuf-$PROTO_MAJOR.$PROTO_MINOR.$PROTO_PATCH/install
+          make
+          make install
+      - name: build with cmake
+        uses: lukka/run-cmake@v3
+        with:
+          cmakeListsOrSettingsJson: CMakeListsTxtAdvanced
+          cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
+          cmakeBuildType: Release
+          cmakeAppendedArgs: '-DBOOST_ROOT=${{ github.workspace }}/boost_${{ env.BOOST_MAJOR }}_${{ env.BOOST_MINOR }}_${{ env.BOOST_PATCH }}/install -DCMAKE_PREFIX_PATH=${{ github.workspace }}/protobuf-$PROTO_MAJOR.$PROTO_MINOR.$PROTO_PATCH/install'
+          buildWithCMake: true
+      - name: Setup python
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+          architecture: x64
+      - run: |
+          cd python
+          python -m pip install -r requirements.txt
+          python -m pip install redis
+          python setup.py build
+          python setup.py install --user
+          python -m pytest tests
