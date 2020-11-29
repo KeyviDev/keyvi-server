@@ -63,16 +63,12 @@ jobs:
             ${{ matrix.config.name }}-ccache-
       - name: Configure ccache
         id: ccache_configure
-        shell: cmake -P {0}
         run: |
-          file(TO_CMAKE_PATH "$ENV{GITHUB_WORKSPACE}" ccache_basedir)
-          set(ENV{CCACHE_BASEDIR} "${ccache_basedir}")
-          set(ENV{CCACHE_DIR} "${ccache_basedir}/.ccache")
-          set(ENV{CCACHE_COMPRESS} "true")
-          set(ENV{CCACHE_COMPRESSLEVEL} "6")
-          set(ENV{CCACHE_MAXSIZE} "500M")
-          execute_process(COMMAND ccache -p)
-          execute_process(COMMAND ccache -z)
+          ccache --set-config=cache_dir=$GITHUB_WORKSPACE/.ccache
+          ccache --set-config=max_size=500M
+          ccache --set-config=compression=true
+          ccache -p
+          ccache -z
 
       # Build boost (cached)
       - name: Cache Boost
@@ -116,6 +112,5 @@ jobs:
       
       - name: Stats from ccache
         id: ccache_stats
-        shell: cmake -P {0}
         run: |
-          execute_process(COMMAND ccache -s)
+         ccache -s
