@@ -23,9 +23,6 @@ jobs:
         type: ['Release', 'Debug']
         os: ['macos-latest', 'ubuntu-latest']
     env:
-      BOOST_MAJOR: 1
-      BOOST_MINOR: 73
-      BOOST_PATCH: 0
       PROTO_MAJOR: 3
       PROTO_MINOR: 11
       PROTO_PATCH: 4
@@ -34,14 +31,14 @@ jobs:
         if: runner.os == 'Linux'
         run: |
           sudo apt-get update
-          sudo apt-get install -y libsnappy-dev libzzip-dev zlib1g-dev
+          sudo apt-get install -y libsnappy-dev libzzip-dev zlib1g-dev libboost-all-dev
           sudo apt-get install -y libssl-dev libgflags-dev libleveldb-dev libgoogle-perftools-dev
           sudo apt-get install ccache
       - name: install macOS deps
         if: runner.os == 'macOS'
         run: |
           brew update
-          brew install zlib snappy openssl gnu-getopt coreutils gflags leveldb gperftools  
+          brew install zlib snappy openssl gnu-getopt coreutils gflags leveldb gperftools boost
           brew install ccache     
       - name: checkout from git
         uses: actions/checkout@v2
@@ -70,22 +67,6 @@ jobs:
           ccache -p
           ccache -z
 
-      # Build boost (cached)
-      - name: Cache Boost
-        id: cache_boost
-        uses: actions/cache@v2
-        with:
-          path: boost_${{ env.BOOST_MAJOR }}_${{ env.BOOST_MINOR }}_${{ env.BOOST_PATCH }}/installdir
-          key: ${{ runner.os }}-${{ env.BOOST_MAJOR }}.${{ env.BOOST_MINOR }}.${{ env.BOOST_PATCH }}-keyvi
-      - name: Install Boost
-        if: steps.cache_boost.outputs.cache-hit != 'true'
-        run: |
-          wget https://dl.bintray.com/boostorg/release/${BOOST_MAJOR}.${BOOST_MINOR}.${BOOST_PATCH}/source/boost_${BOOST_MAJOR}_${BOOST_MINOR}_${BOOST_PATCH}.tar.gz
-          tar -zxf boost_${BOOST_MAJOR}_${BOOST_MINOR}_${BOOST_PATCH}.tar.gz
-          cd boost_${BOOST_MAJOR}_${BOOST_MINOR}_${BOOST_PATCH}
-          mkdir -p $GITHUB_WORKSPACE/boost_${BOOST_MAJOR}_${BOOST_MINOR}_${BOOST_PATCH}/installdir
-          ./bootstrap.sh --without-libraries=graph_parallel,python
-          ./b2 --prefix=$GITHUB_WORKSPACE/boost_${BOOST_MAJOR}_${BOOST_MINOR}_${BOOST_PATCH}/installdir install
       - name: Cache protobuf
         id: cache_protobuf
         uses: actions/cache@v2
@@ -107,7 +88,7 @@ jobs:
           cmakeListsOrSettingsJson: CMakeListsTxtAdvanced
           cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
           cmakeBuildType: ${{matrix.type}}
-          cmakeAppendedArgs: '-DBOOST_ROOT=${{ github.workspace }}/boost_${{ env.BOOST_MAJOR }}_${{ env.BOOST_MINOR }}_${{ env.BOOST_PATCH }}/installdir -DCMAKE_PREFIX_PATH=${{ github.workspace }}/protobuf-$PROTO_MAJOR.$PROTO_MINOR.$PROTO_PATCH/installdir -D CMAKE_C_COMPILER_LAUNCHER=ccache -D CMAKE_CXX_COMPILER_LAUNCHER=ccache'
+          cmakeAppendedArgs: '-DCMAKE_PREFIX_PATH=${{ github.workspace }}/protobuf-$PROTO_MAJOR.$PROTO_MINOR.$PROTO_PATCH/installdir -D CMAKE_C_COMPILER_LAUNCHER=ccache -D CMAKE_CXX_COMPILER_LAUNCHER=ccache'
           buildWithCMake: true
           buildDirectory: '${{ github.workspace }}/build'
       
