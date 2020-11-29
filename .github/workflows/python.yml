@@ -35,13 +35,40 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y libsnappy-dev libzzip-dev zlib1g-dev
           sudo apt-get install -y libssl-dev libgflags-dev libleveldb-dev libgoogle-perftools-dev
+          sudo apt-get install ccache
       - name: install macOS deps
         if: runner.os == 'macOS'
         run: |
           brew update
-          brew install zlib snappy openssl gnu-getopt coreutils gflags leveldb gperftools       
+          brew install zlib snappy openssl gnu-getopt coreutils gflags leveldb gperftools
+          brew install ccache
       - name: checkout from git
         uses: actions/checkout@v2
+      
+      # Ccache https://cristianadam.eu/20200113/speeding-up-c-plus-plus-github-actions-using-ccache/
+    
+      - name: Prepare ccache timestamp
+        id: ccache_cache_timestamp
+        shell: cmake -P {0}
+        run: |
+          string(TIMESTAMP current_date "%Y-%m-%d-%H;%M;%S" UTC)
+          message("::set-output name=timestamp::${current_date}")
+      - name: ccache cache files
+        uses: actions/cache@v2
+        with:
+          path: .ccache
+          key: ${{ matrix.os }}-Release-ccache-${{ steps.ccache_cache_timestamp.outputs.timestamp }}
+          restore-keys: |
+            ${{ matrix.os }}-Release-ccache-
+      - name: Configure ccache
+        id: ccache_configure
+        run: |
+          ccache --set-config=cache_dir=$GITHUB_WORKSPACE/.ccache
+          ccache --set-config=max_size=500M
+          ccache --set-config=compression=true
+          ccache -p
+          ccache -z
+      
       - name: Cache Boost
         id: cache_boost
         uses: actions/cache@v2
@@ -78,7 +105,7 @@ jobs:
           cmakeListsOrSettingsJson: CMakeListsTxtAdvanced
           cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
           cmakeBuildType: Release
-          cmakeAppendedArgs: '-DBOOST_ROOT=${{ github.workspace }}/boost_${{ env.BOOST_MAJOR }}_${{ env.BOOST_MINOR }}_${{ env.BOOST_PATCH }}/installdir -DCMAKE_PREFIX_PATH=${{ github.workspace }}/protobuf-$PROTO_MAJOR.$PROTO_MINOR.$PROTO_PATCH/installdir'
+          cmakeAppendedArgs: '-DBOOST_ROOT=${{ github.workspace }}/boost_${{ env.BOOST_MAJOR }}_${{ env.BOOST_MINOR }}_${{ env.BOOST_PATCH }}/installdir -DCMAKE_PREFIX_PATH=${{ github.workspace }}/protobuf-$PROTO_MAJOR.$PROTO_MINOR.$PROTO_PATCH/installdir -D CMAKE_C_COMPILER_LAUNCHER=ccache -D CMAKE_CXX_COMPILER_LAUNCHER=ccache'
           buildWithCMake: true
           buildDirectory: '${{ github.workspace }}/build'
       - name: Setup python
@@ -88,8 +115,13 @@ jobs:
           architecture: x64
       - run: |
           cd python
-          python -m pip install -r requirements.txt
-          python -m pip install redis
-          python setup.py build
+          CC=ccache CXX=ccache python -m pip install -r requirements.txt
+          CC=ccache CXX=ccache python -m pip install redis
+          CC=ccache CXX=ccache python setup.py build
           python setup.py install --user
           python -m pytest tests
+      
+      - name: Stats from ccache
+        id: ccache_stats
+        run: |
+          ccache -s
