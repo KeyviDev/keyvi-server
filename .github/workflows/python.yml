@@ -56,9 +56,9 @@ jobs:
         uses: actions/cache@v2
         with:
           path: .ccache
-          key: ${{ matrix.config.name }}-ccache-${{ steps.ccache_cache_timestamp.outputs.timestamp }}
+          key: ${{ matrix.os }}-Release-ccache-${{ steps.ccache_cache_timestamp.outputs.timestamp }}
           restore-keys: |
-            ${{ matrix.config.name }}-ccache-
+            ${{ matrix.os }}-Release-ccache-
       - name: Configure ccache
         id: ccache_configure
         run: |
