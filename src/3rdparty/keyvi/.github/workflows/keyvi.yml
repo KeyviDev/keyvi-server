@@ -1,0 +1,55 @@
+# Build on Linux
+
+name: Build keyvi
+
+# Controls when the action will run. 
+on:
+  # Triggers the workflow on push or pull request events but only for the master branch
+  push:
+  pull_request:
+    branches: [ master ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ${{matrix.os}}
+    name:  ${{ matrix.type }} on ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        type: ['Release', 'Debug']
+        os: ['macos-latest', 'ubuntu-20.04']
+    steps:
+      - name: install Linux deps
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libsnappy-dev libzzip-dev zlib1g-dev libboost-all-dev
+      - name: install macOS deps
+        if: runner.os == 'macOS'
+        run: |
+          brew update
+          brew install zlib snappy boost
+      - name: checkout from git
+        uses: actions/checkout@v2
+
+      - name: ccache
+        uses: hendrikmuhs/ccache-action@v1
+        with:
+          key: ${{ matrix.os }}-${{ matrix.type }}
+
+      - name: build with cmake
+        uses: lukka/run-cmake@v3
+        with:
+          cmakeListsOrSettingsJson: CMakeListsTxtAdvanced
+          cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
+          cmakeAppendedArgs: '-DCMAKE_BUILD_TYPE=${{ matrix.type }} -D CMAKE_C_COMPILER_LAUNCHER=ccache -D CMAKE_CXX_COMPILER_LAUNCHER=ccache'
+          buildWithCMake: true
+          buildDirectory: '${{ github.workspace }}/build'
+
+      - name: Unit tests
+        id: unit_tests
+        run: |
+         build/unit_test_all
