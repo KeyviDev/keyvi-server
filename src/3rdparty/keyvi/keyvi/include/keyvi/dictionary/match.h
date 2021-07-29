@@ -39,6 +39,17 @@
 
 namespace keyvi {
 namespace dictionary {
+struct Match;
+}
+namespace index {
+namespace internal {
+template <class MatcherT, class DeletedT>
+keyvi::dictionary::Match NextFilteredMatch(const MatcherT&, const DeletedT&);
+template <class MatcherT, class DeletedT>
+keyvi::dictionary::Match FirstFilteredMatch(const MatcherT&, const DeletedT&);
+}  // namespace internal
+}  // namespace index
+namespace dictionary {
 
 #ifdef Py_PYTHON_H
 class attributes_visitor : public boost::static_visitor<PyObject*> {
@@ -175,6 +186,14 @@ struct Match {
   fsa::automata_t fsa_ = 0;
   uint64_t state_ = 0;
   attributes_t attributes_ = 0;
+
+  // friend for accessing the fsa
+  template <class MatcherT, class DeletedT>
+  friend Match index::internal::NextFilteredMatch(const MatcherT&, const DeletedT&);
+  template <class MatcherT, class DeletedT>
+  friend Match index::internal::FirstFilteredMatch(const MatcherT&, const DeletedT&);
+
+  fsa::automata_t& GetFsa() { return fsa_; }
 };
 
 } /* namespace dictionary */
