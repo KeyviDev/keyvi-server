@@ -75,7 +75,7 @@ BOOST_AUTO_TEST_CASE(minimization_largevalues) {
 
 BOOST_AUTO_TEST_CASE(minimization_largevalue_small_memory) {
   // combination of small value store and large values, spawning more than 1 chunk
-  JsonValueStore values(keyvi::util::parameters_t{{TEMPORARY_PATH_KEY, "/tmp"}, {"memory_limit", "50000"}});
+  JsonValueStore values(keyvi::util::parameters_t{{TEMPORARY_PATH_KEY, "/tmp"}, {"memory_limit", "500000"}});
   bool no_minimization = false;
   // create a value that almost fills the 1st chunk
   std::string padding_value = "{\"";
@@ -128,7 +128,7 @@ BOOST_AUTO_TEST_CASE(persistence) {
 
   temp_path /= boost::filesystem::unique_path("dictionary-unit-test-temp-dictionary-%%%%-%%%%-%%%%-%%%%");
 
-  std::string filename = temp_path.native();
+  std::string filename = temp_path.string();
 
   std::ofstream out_stream(filename, std::ios::binary);
   json_value_store.Write(out_stream);

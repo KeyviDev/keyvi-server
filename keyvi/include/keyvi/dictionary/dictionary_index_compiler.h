@@ -31,6 +31,10 @@
 #include <utility>
 #include <vector>
 
+#ifdef _MSC_VER
+// workaround for https://github.com/boostorg/sort/issues/43
+#include <ciso646>
+#endif
 #include <boost/sort/sort.hpp>
 
 #include "keyvi/dictionary/dictionary_compiler_common.h"
@@ -206,7 +210,9 @@ class DictionaryIndexCompiler final {
 
   inline void Sort() {
     if (key_values_.size() > parallel_sort_threshold_ && parallel_sort_threshold_ != 0) {
-      boost::sort::parallel_stable_sort(key_values_.begin(), key_values_.end());
+      // see gh#215 parallel_stable_sort segfaults
+      // boost::sort::parallel_stable_sort(key_values_.begin(), key_values_.end());
+      boost::sort::spinsort(key_values_.begin(), key_values_.end());
     } else {
       std::stable_sort(key_values_.begin(), key_values_.end());
     }

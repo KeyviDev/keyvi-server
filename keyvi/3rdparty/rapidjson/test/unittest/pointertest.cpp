@@ -1,6 +1,6 @@
 // Tencent is pleased to support the open source community by making RapidJSON available.
 // 
-// Copyright (C) 2015 THL A29 Limited, a Tencent company, and Milo Yip. All rights reserved.
+// Copyright (C) 2015 THL A29 Limited, a Tencent company, and Milo Yip.
 //
 // Licensed under the MIT License (the "License"); you may not use this file except
 // in compliance with the License. You may obtain a copy of the License at
@@ -1526,6 +1526,38 @@ TEST(Pointer, Ambiguity) {
         Pointer("/0/1").Set(d, 456); // 1 is treated as "1" to index object
         EXPECT_EQ(123, Pointer("/0/0").Get(d)->GetInt());
         EXPECT_EQ(456, Pointer("/0/1").Get(d)->GetInt());
+    }
+}
+
+TEST(Pointer, ResolveOnObject) {
+    Document d;
+    EXPECT_FALSE(d.Parse("{\"a\": 123}").HasParseError());
+
+    {
+        Value::ConstObject o = static_cast<const Document&>(d).GetObject();
+        EXPECT_EQ(123, Pointer("/a").Get(o)->GetInt());
+    }
+
+    {
+        Value::Object o = d.GetObject();
+        Pointer("/a").Set(o, 456, d.GetAllocator());
+        EXPECT_EQ(456, Pointer("/a").Get(o)->GetInt());
+    }
+}
+
+TEST(Pointer, ResolveOnArray) {
+    Document d;
+    EXPECT_FALSE(d.Parse("[1, 2, 3]").HasParseError());
+
+    {
+        Value::ConstArray a = static_cast<const Document&>(d).GetArray();
+        EXPECT_EQ(2, Pointer("/1").Get(a)->GetInt());
+    }
+
+    {
+        Value::Array a = d.GetArray();
+        Pointer("/1").Set(a, 123, d.GetAllocator());
+        EXPECT_EQ(123, Pointer("/1").Get(a)->GetInt());
     }
 }
 

@@ -26,6 +26,7 @@
 #define KEYVI_DICTIONARY_FSA_TRAVERSAL_TRAVERSAL_BASE_H_
 
 #include <cstdint>
+#include <utility>
 #include <vector>
 
 // #define ENABLE_TRACING
@@ -107,12 +108,16 @@ template <class TransitionT = Transition>
 struct TraversalStack {
   TraversalStack() : traversal_states(), traversal_stack_payload() { traversal_states.resize(20); }
 
-  explicit TraversalStack(TraversalPayload<TransitionT>& payload)
-      : traversal_states(), traversal_stack_payload(payload) {
+  explicit TraversalStack(TraversalPayload<TransitionT>&& payload)
+      : traversal_states(), traversal_stack_payload(std::move(payload)) {
     traversal_states.resize(20);
   }
 
   TraversalState<TransitionT>& GetStates() { return traversal_states[traversal_stack_payload.current_depth]; }
+
+  const TraversalState<TransitionT>& GetStates() const {
+    return traversal_states[traversal_stack_payload.current_depth];
+  }
 
   size_t GetDepth() const { return traversal_stack_payload.current_depth; }
 
