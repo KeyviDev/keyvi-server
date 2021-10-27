@@ -71,6 +71,33 @@ void IndexImpl::Get(google::protobuf::RpcController *cntl_base, const GetRequest
   response->set_value(match.GetValueAsString());
 }
 
+void IndexImpl::GetFuzzy(google::protobuf::RpcController *cntl_base, const GetFuzzyRequest *request,
+                         GetFuzzyResponse *response, google::protobuf::Closure *done) {
+  brpc::ClosureGuard done_guard(done);
+  brpc::Controller *cntl = static_cast<brpc::Controller *>(cntl_base);
+
+  auto matches =
+      backend_->GetIndex().GetFuzzy(request->key(), request->max_edit_distance(), request->min_exact_prefix());
+  for (auto m : matches) {
+    Match *match = response->add_matches();
+    match->set_matched_string(m.GetMatchedString());
+    match->set_value(m.GetValueAsString());
+  }
+}
+
+void IndexImpl::GetNear(google::protobuf::RpcController *cntl_base, const GetNearRequest *request,
+                        GetNearResponse *response, google::protobuf::Closure *done) {
+  brpc::ClosureGuard done_guard(done);
+  brpc::Controller *cntl = static_cast<brpc::Controller *>(cntl_base);
+
+  auto matches = backend_->GetIndex().GetNear(request->key(), request->min_exact_prefix(), request->greedy());
+  for (auto m : matches) {
+    Match *match = response->add_matches();
+    match->set_matched_string(m.GetMatchedString());
+    match->set_value(m.GetValueAsString());
+  }
+}
+
 void IndexImpl::GetRaw(google::protobuf::RpcController *cntl_base, const GetRawRequest *request,
                        StringValueResponse *response, google::protobuf::Closure *done) {
   brpc::ClosureGuard done_guard(done);

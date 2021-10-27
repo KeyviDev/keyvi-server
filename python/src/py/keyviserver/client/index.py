@@ -2,6 +2,7 @@ import grpc
 import json
 from keyviserver.proto import index_pb2, index_pb2_grpc
 
+
 class Index(object):
     """
     KeyviServer index client.
@@ -41,14 +42,22 @@ class Index(object):
             if not isinstance(value, (str, bytes)):
                 key_value_dict[key] = json.dumps(value)
 
-        self.stub.MSet(index_pb2.MSetRequest(key_values = key_value_dict))
+        self.stub.MSet(index_pb2.MSetRequest(key_values=key_value_dict))
 
     def get(self, key):
         response = self.stub.Get(index_pb2.GetRequest(key=key))
         return json.loads(response.value) if response.value else None
 
-    def flush(self, asynchronous = False):
+    def get_fuzzy(self, key, max_edit_distance=3, min_exact_prefix=2):
+        response = self.stub.GetFuzzy(index_pb2.GetFuzzyRequest(key=key, max_edit_distance=max_edit_distance, min_exact_prefix=min_exact_prefix))
+        return response.matches
+
+    def get_near(self, key, min_exact_prefix=2, greedy=False):
+        response = self.stub.GetNear(index_pb2.GetNearRequest(key=key, min_exact_prefix=min_exact_prefix, greedy=greedy))
+        return response.matches
+
+    def flush(self, asynchronous=False):
         self.stub.Flush(index_pb2.FlushRequest(asynchronous=asynchronous))
 
-    def force_merge(self, max_segments = 1):
-        self.stub.ForceMerge(index_pb2.ForceMergeRequest(max_segments = max_segments))
+    def force_merge(self, max_segments=1):
+        self.stub.ForceMerge(index_pb2.ForceMergeRequest(max_segments=max_segments))
