@@ -24,12 +24,12 @@
 
 #include "keyvi_server/service/index_impl.h"
 
+#include <memory>
+#include <string>
+
 #include <brpc/closure_guard.h>
 #include <brpc/controller.h>
 #include <google/protobuf/map.h>
-
-#include <memory>
-#include <string>
 
 namespace keyvi_server {
 namespace service {
