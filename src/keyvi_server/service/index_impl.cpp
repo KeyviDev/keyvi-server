@@ -24,12 +24,12 @@
 
 #include "keyvi_server/service/index_impl.h"
 
+#include <memory>
+#include <string>
+
 #include <brpc/closure_guard.h>
 #include <brpc/controller.h>
 #include <google/protobuf/map.h>
-
-#include <memory>
-#include <string>
 
 namespace keyvi_server {
 namespace service {
@@ -69,6 +69,33 @@ void IndexImpl::Get(google::protobuf::RpcController *cntl_base, const GetRequest
   keyvi::dictionary::Match match = backend_->GetIndex()[request->key()];
 
   response->set_value(match.GetValueAsString());
+}
+
+void IndexImpl::GetFuzzy(google::protobuf::RpcController *cntl_base, const GetFuzzyRequest *request,
+                         GetFuzzyResponse *response, google::protobuf::Closure *done) {
+  brpc::ClosureGuard done_guard(done);
+  brpc::Controller *cntl = static_cast<brpc::Controller *>(cntl_base);
+
+  auto matches =
+      backend_->GetIndex().GetFuzzy(request->key(), request->max_edit_distance(), request->min_exact_prefix());
+  for (auto m : matches) {
+    Match *match = response->add_matches();
+    match->set_matched_string(m.GetMatchedString());
+    match->set_value(m.GetValueAsString());
+  }
+}
+
+void IndexImpl::GetNear(google::protobuf::RpcController *cntl_base, const GetNearRequest *request,
+                        GetNearResponse *response, google::protobuf::Closure *done) {
+  brpc::ClosureGuard done_guard(done);
+  brpc::Controller *cntl = static_cast<brpc::Controller *>(cntl_base);
+
+  auto matches = backend_->GetIndex().GetNear(request->key(), request->min_exact_prefix(), request->greedy());
+  for (auto m : matches) {
+    Match *match = response->add_matches();
+    match->set_matched_string(m.GetMatchedString());
+    match->set_value(m.GetValueAsString());
+  }
 }
 
 void IndexImpl::GetRaw(google::protobuf::RpcController *cntl_base, const GetRawRequest *request,

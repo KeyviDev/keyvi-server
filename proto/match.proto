@@ -1,0 +1,6 @@
+syntax="proto2";
+
+message Match {
+    required string value = 1;
+    required string matched_string = 2;
+};

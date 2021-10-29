@@ -25,9 +25,9 @@
 #ifndef KEYVI_SERVER_SERVICE_INDEX_IMPL_H_
 #define KEYVI_SERVER_SERVICE_INDEX_IMPL_H_
 
-#include <keyvi/index/index.h>
-
 #include <string>
+
+#include <keyvi/index/index.h>
 
 #include "index.pb.h"  //NOLINT
 #include "keyvi_server/core/data_backend.h"
@@ -48,6 +48,10 @@ class IndexImpl : public Index {
             google::protobuf::Closure* done);
   void Get(google::protobuf::RpcController* cntl_base, const GetRequest* request, StringValueResponse* response,
            google::protobuf::Closure* done);
+  void GetFuzzy(google::protobuf::RpcController* cntl_base, const GetFuzzyRequest* request, GetFuzzyResponse* response,
+                google::protobuf::Closure* done);
+  void GetNear(google::protobuf::RpcController* cntl_base, const GetNearRequest* request, GetNearResponse* response,
+               google::protobuf::Closure* done);
   void GetRaw(google::protobuf::RpcController* cntl_base, const GetRawRequest* request, StringValueResponse* response,
               google::protobuf::Closure* done);
   void Set(google::protobuf::RpcController* cntl_base, const SetRequest* request, EmptyBodyResponse* response,

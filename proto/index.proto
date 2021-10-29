@@ -3,6 +3,8 @@ option cc_generic_services = true;
 
 package keyvi_server.service;
 
+import "match.proto";
+
 message InfoRequest {
 };
 
@@ -16,6 +18,18 @@ message GetRequest {
 
 message GetRawRequest {
     required string key = 1;
+};
+
+message GetNearRequest {
+    required string key = 1;
+    optional int32 min_exact_prefix = 2 [default = 2];
+	optional bool greedy = 3 [default = false];
+};
+
+message GetFuzzyRequest {
+    required string key = 1;
+    optional int32 max_edit_distance = 2 [default = 3];
+    optional int32 min_exact_prefix = 3 [default = 2];
 };
 
 message SetRequest {
@@ -54,12 +68,22 @@ message StringValueResponse {
     required string value = 1;
 };
 
+message GetNearResponse {
+    repeated Match matches = 1;
+};
+
+message GetFuzzyResponse {
+    repeated Match matches = 1;
+};
+
 service Index {
     rpc Delete(DeleteRequest) returns (EmptyBodyResponse);
     rpc GetRaw(GetRawRequest) returns (StringValueResponse);
     rpc Contains(ContainsRequest) returns (ContainsResponse);
     rpc Info(InfoRequest) returns (InfoResponse);
     rpc Get(GetRequest) returns (StringValueResponse);
+    rpc GetNear(GetNearRequest) returns (GetNearResponse);
+    rpc GetFuzzy(GetFuzzyRequest) returns (GetFuzzyResponse);    
     rpc Set(SetRequest) returns (EmptyBodyResponse);
     rpc MSet(MSetRequest) returns (EmptyBodyResponse);
     rpc ForceMerge(ForceMergeRequest) returns (EmptyBodyResponse);

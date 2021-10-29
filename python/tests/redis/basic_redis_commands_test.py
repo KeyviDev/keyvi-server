@@ -11,7 +11,7 @@ import socket
 import time
 
 
-@pytest.fixture(scope="session", autouse=True)
+@pytest.fixture(scope="module", autouse=True)
 def keyvi_server(request):
 
     def wait_for_connection(port):
